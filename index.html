@@ -50,8 +50,28 @@
             position: absolute;
             background: #ffffff;
             border-radius: 50%;
-            will-change: transform;
             transition: none;
+        }
+
+        /* ============ АМОГУСЫ НА ФОНЕ ============ */
+        #amongusLayer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 6;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .amongus {
+            position: absolute;
+            width: 100px;
+            height: auto;
+            opacity: 0.9;
+            will-change: left, top, transform;
+            image-rendering: pixelated;
         }
 
         /* ============ ГРАДИЕНТЫ ============ */
@@ -61,7 +81,7 @@
             left: 0;
             width: 100%;
             height: 50%;
-            z-index: 2;
+            z-index: 3;
             pointer-events: none;
             opacity: 0.45;
             background:
@@ -111,7 +131,7 @@
             left: 0;
             width: 100%;
             height: 35%;
-            z-index: 3;
+            z-index: 4;
             pointer-events: none;
             opacity: 0.45;
             background:
@@ -129,7 +149,7 @@
             left: 0;
             width: 100%;
             height: 40%;
-            z-index: 2;
+            z-index: 3;
             pointer-events: none;
             opacity: 0.45;
             background:
@@ -179,28 +199,6 @@
             gap: 12px;
             align-items: center;
             flex-wrap: wrap;
-        }
-
-        .header-right .badge {
-            padding: 6px 16px;
-            background: rgba(255, 145, 0, 0.15);
-            border: 1px solid rgba(255, 145, 0, 0.3);
-            border-radius: 20px;
-            font-size: 12px;
-            color: #ffab40;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .header-right .badge:hover {
-            background: rgba(255, 145, 0, 0.25);
-            transform: scale(1.05);
-        }
-
-        .header-right .badge.active {
-            background: rgba(79, 195, 255, 0.2);
-            border-color: #4fc3ff;
-            color: #4fc3ff;
         }
 
         /* ============ СЧЁТЧИК ПОСЕТИТЕЛЕЙ ============ */
@@ -481,7 +479,6 @@
             box-shadow: 0 10px 40px rgba(0, 100, 255, 0.15);
         }
 
-        /* Золотая рамка для постов автора */
         .post-card.author-post {
             border-color: rgba(255, 179, 0, 0.35);
             background: linear-gradient(135deg, rgba(40, 25, 0, 0.5), rgba(0, 20, 60, 0.4));
@@ -600,7 +597,6 @@
             margin-left: 8px;
         }
 
-        /* ============ БЕЙДЖ АВТОРА ============ */
         .author-badge {
             display: inline-block;
             padding: 2px 10px;
@@ -905,6 +901,11 @@
             .post-card:active {
                 transform: scale(0.97);
             }
+
+            .amongus {
+                width: 65px;
+                opacity: 0.75;
+            }
         }
 
         @media (min-width: 1400px) {
@@ -918,6 +919,10 @@
     <div class="container">
         <!-- ЗВЁЗДЫ -->
         <div id="stars"></div>
+
+        <!-- АМОГУСЫ НА ФОНЕ -->
+        <div id="amongusLayer"></div>
+
         <div class="gradient"></div>
         <div class="gradient-glow"></div>
         <div class="gradient-edge"></div>
@@ -932,8 +937,6 @@
                         <span>👥 Онлайн:</span>
                         <span class="count" id="visitorCount">1</span>
                     </div>
-                    <span class="badge" id="blogTabBtn">Блог</span>
-                    <span class="badge" id="downloadTabBtn">Скачать</span>
                 </div>
             </header>
 
@@ -995,61 +998,156 @@
     </div>
 
     <script>
+        // ============ ЕДИНЫЙ ЦИКЛ АНИМАЦИИ (не зависит от FPS и вкладок) ============
+        let lastTime = performance.now();
+
+        const starsData = [];
+        const amongusData = [];
+
+        function randomBetween(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
         // ============ ЗВЁЗДЫ ============
         (function() {
             const starsContainer = document.getElementById('stars');
             const STAR_COUNT = 300;
             const sizes = [0.5, 0.7, 0.9, 1.1, 1.4, 1.7, 2.0, 2.5, 3.0, 3.5];
-            let stars = [];
 
-            function moveStar(star) {
-                const speed = star.dataset.speed || (1 + Math.random() * 2);
-                let newLeft = parseFloat(star.style.left) - speed * 0.05;
-
-                if (newLeft < -20) {
-                    newLeft = 100 + Math.random() * 30;
-                    star.style.top = Math.random() * 100 + '%';
-                    const size = sizes[Math.floor(Math.random() * sizes.length)];
-                    star.style.width = size + 'px';
-                    star.style.height = size + 'px';
-                    const opacity = 0.4 + Math.random() * 0.6;
-                    star.style.opacity = opacity;
-                    if (size > 2.5) {
-                        star.style.boxShadow = '0 0 5px rgba(255,255,255,0.4)';
-                    } else {
-                        star.style.boxShadow = 'none';
-                    }
-                    star.dataset.speed = 1 + Math.random() * 2.5;
+            for (let i = 0; i < STAR_COUNT; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = sizes[Math.floor(Math.random() * sizes.length)];
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                const left = (i / STAR_COUNT) * 130 - 20;
+                star.style.left = left + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.opacity = 0.4 + Math.random() * 0.6;
+                if (size > 2.5) {
+                    star.style.boxShadow = '0 0 5px rgba(255,255,255,0.4)';
                 }
+                starsContainer.appendChild(star);
 
-                star.style.left = newLeft + '%';
-                requestAnimationFrame(() => moveStar(star));
+                // Скорость в %/сек — одинаковая всегда
+                starsData.push({
+                    el: star,
+                    speed: 1.5 + Math.random() * 3.5,
+                    sizes: sizes
+                });
             }
-
-            function createInitialStars() {
-                for (let i = 0; i < STAR_COUNT; i++) {
-                    const star = document.createElement('div');
-                    star.className = 'star';
-                    const size = sizes[Math.floor(Math.random() * sizes.length)];
-                    star.style.width = size + 'px';
-                    star.style.height = size + 'px';
-                    const left = (i / STAR_COUNT) * 130 - 20;
-                    star.style.left = left + '%';
-                    star.style.top = Math.random() * 100 + '%';
-                    const opacity = 0.4 + Math.random() * 0.6;
-                    star.style.opacity = opacity;
-                    star.dataset.speed = 1 + Math.random() * 2.5;
-                    if (size > 2.5) {
-                        star.style.boxShadow = '0 0 5px rgba(255,255,255,0.4)';
-                    }
-                    starsContainer.appendChild(star);
-                    stars.push(star);
-                }
-            }
-
-            createInitialStars();
-            stars.forEach(star => moveStar(star));
         })();
+
+        // ============ АМОГУСЫ ============
+        (function() {
+            const AMONGUS_FILES = [
+                'red', 'tan', 'black', 'yellow',
+                'purple', 'maroon', 'white', 'blue', 'pink'
+            ];
+
+            const layer = document.getElementById('amongusLayer');
+            if (!layer) return;
+
+            const shuffled = AMONGUS_FILES.slice().sort(() => Math.random() - 0.5);
+
+            shuffled.forEach((name, index) => {
+                const img = document.createElement('img');
+                img.className = 'amongus';
+                img.src = 'bg/' + name + '.png';
+                img.alt = name;
+                img.dataset.name = name;
+
+                const startLeft = (index / AMONGUS_FILES.length) * 90 + randomBetween(0, 8);
+                img.style.left = startLeft + '%';
+
+                const baseTop = randomBetween(8, 82);
+                img.style.top = baseTop + '%';
+
+                img.onerror = function() {
+                    this.style.display = 'none';
+                };
+
+                layer.appendChild(img);
+
+                amongusData.push({
+                    el: img,
+                    left: startLeft,
+                    baseTop: baseTop,
+
+                    // Скорость в %/сек (амогусы быстрее звёзд)
+                    speed: randomBetween(2.5, 5.5),
+
+                    floatAmp: randomBetween(2.5, 5.5),
+                    floatFreq: randomBetween(0.9, 1.6),
+                    floatPhase: randomBetween(0, Math.PI * 2),
+
+                    rotAmp: randomBetween(4, 9),
+                    rotPhase: randomBetween(0, Math.PI * 2),
+                    rotFreq: randomBetween(1.0, 1.8),
+                    baseRot: randomBetween(-4, 4)
+                });
+            });
+        })();
+
+        // ============ ЕДИНЫЙ ЦИКЛ ============
+        function tick(now) {
+            let dt = (now - lastTime) / 1000;
+            if (dt > 0.1) dt = 0.1;
+            lastTime = now;
+
+            // ===== ЗВЁЗДЫ =====
+            for (let i = 0; i < starsData.length; i++) {
+                const s = starsData[i];
+                const star = s.el;
+                let left = parseFloat(star.style.left);
+                left -= s.speed * dt;
+
+                if (left < -20) {
+                    left = 100 + Math.random() * 30;
+                    star.style.top = Math.random() * 100 + '%';
+                    const size = s.sizes[Math.floor(Math.random() * s.sizes.length)];
+                    star.style.width = size + 'px';
+                    star.style.height = size + 'px';
+                    star.style.opacity = 0.4 + Math.random() * 0.6;
+                    s.speed = 1.5 + Math.random() * 3.5;
+                }
+                star.style.left = left + '%';
+            }
+
+            // ===== АМОГУСЫ =====
+            const t = now / 1000;
+            for (let i = 0; i < amongusData.length; i++) {
+                const a = amongusData[i];
+                const img = a.el;
+                if (img.style.display === 'none') continue;
+
+                a.left -= a.speed * dt;
+
+                if (a.left < -15) {
+                    a.left = 105 + randomBetween(0, 15);
+                    a.baseTop = randomBetween(8, 82);
+                    a.speed = randomBetween(2.5, 5.5);
+                    a.floatAmp = randomBetween(2.5, 5.5);
+                    a.floatFreq = randomBetween(0.9, 1.6);
+                    a.floatPhase = randomBetween(0, Math.PI * 2);
+                    a.rotAmp = randomBetween(4, 9);
+                    a.rotPhase = randomBetween(0, Math.PI * 2);
+                    a.baseRot = randomBetween(-4, 4);
+                }
+
+                const offsetY = Math.sin(a.floatPhase + t * a.floatFreq) * a.floatAmp;
+                const top = a.baseTop + offsetY;
+                const rotate = a.baseRot + Math.sin(a.rotPhase + t * a.rotFreq) * a.rotAmp;
+
+                img.style.left = a.left + '%';
+                img.style.top = top + '%';
+                img.style.transform = 'scaleX(-1) rotate(' + rotate + 'deg)';
+            }
+
+            requestAnimationFrame(tick);
+        }
+
+        requestAnimationFrame(tick);
 
         // ============ СЧЁТЧИК ПОСЕТИТЕЛЕЙ ============
         (function() {
@@ -1115,7 +1213,7 @@
                 if (i % 2 === 0) {
                     const text = parts[i].trim();
                     if (text) {
-                        result += `<span>${text}</span>`;
+                        result += '<span>' + text + '</span>';
                     }
                 } else {
                     const imageName = parts[i].trim();
@@ -1123,24 +1221,20 @@
                         const ext = imageName.split('.').pop().toLowerCase();
                         const validExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
                         const imagePath = validExts.includes(ext) ?
-                            `images/${imageName}` :
-                            `images/${imageName}.jpg`;
+                            'images/' + imageName :
+                            'images/' + imageName + '.jpg';
 
                         if (isModal) {
-                            result += `
-                                <div class="modal-image-wrapper">
-                                    <img src="${imagePath}" alt="${imageName}" 
-                                         onerror="this.parentElement.innerHTML='<span style=\\'color:#ff6b6b;\\'>⚠️ Картинка не найдена: ${imageName}</span>'">
-                                </div>
-                            `;
+                            result += '<div class="modal-image-wrapper">' +
+                                '<img src="' + imagePath + '" alt="' + imageName + '" ' +
+                                'onerror="this.parentElement.innerHTML=\'<span style=&quot;color:#ff6b6b;&quot;>⚠️ Картинка не найдена: ' + imageName + '</span>\'">' +
+                                '</div>';
                         } else {
-                            result += `
-                                <div style="margin: 10px 0;">
-                                    <img src="${imagePath}" alt="${imageName}" 
-                                         style="width:100%; max-height:300px; object-fit:cover; border-radius:12px;"
-                                         onerror="this.style.display='none'">
-                                </div>
-                            `;
+                            result += '<div style="margin: 10px 0;">' +
+                                '<img src="' + imagePath + '" alt="' + imageName + '" ' +
+                                'style="width:100%; max-height:300px; object-fit:cover; border-radius:12px;" ' +
+                                'onerror="this.style.display=\'none\'">' +
+                                '</div>';
                         }
                     }
                 }
@@ -1161,7 +1255,7 @@
                 const imageName = match[1].trim();
                 const ext = imageName.split('.').pop().toLowerCase();
                 const validExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
-                return validExts.includes(ext) ? `images/${imageName}` : `images/${imageName}.jpg`;
+                return validExts.includes(ext) ? 'images/' + imageName : 'images/' + imageName + '.jpg';
             }
             return null;
         }
@@ -1187,13 +1281,12 @@
             if (!grid) return;
 
             if (!posts || posts.length === 0) {
-                grid.innerHTML = `
-                    <div class="empty-posts">
-                        <div class="empty-icon">📭</div>
-                        <div class="empty-title">Извините, но постов пока нет</div>
-                        <div class="empty-desc">Скоро здесь появятся новые записи. Загляните позже!</div>
-                    </div>
-                `;
+                grid.innerHTML =
+                    '<div class="empty-posts">' +
+                        '<div class="empty-icon">📭</div>' +
+                        '<div class="empty-title">Извините, но постов пока нет</div>' +
+                        '<div class="empty-desc">Скоро здесь появятся новые записи. Загляните позже!</div>' +
+                    '</div>';
                 return;
             }
 
@@ -1207,28 +1300,21 @@
                     ? '<span class="author-badge">AUTHOR</span>'
                     : (post.isDev ? '<span class="dev-badge">DEV</span>' : '');
 
-                return `
-                    <div class="post-card ${isAuthor ? 'author-post' : ''}" onclick="openPost(${post.id})">
-                        <div class="post-meta">
-                            <span class="post-author">${post.author || 'Аноним'}${badge}</span>
-                            <span class="post-date">${post.date || 'Дата не указана'}</span>
-                        </div>
-                        ${firstImage ? `
-                            <div class="post-image-wrapper">
-                                <img src="${firstImage}" alt="${post.title}" loading="lazy" onerror="this.parentElement.style.display='none'">
-                            </div>
-                        ` : `
-                            <div class="post-image-placeholder">${isAuthor ? '⭐' : '🌠'}</div>
-                        `}
-                        <h3>${post.title || 'Без заголовка'}</h3>
-                        <div class="post-content-preview">${previewText || 'Нет содержимого'}</div>
-                        <div class="read-more">Читать полностью →</div>
-                    </div>
-                `;
+                return '<div class="post-card ' + (isAuthor ? 'author-post' : '') + '" onclick="openPost(' + post.id + ')">' +
+                    '<div class="post-meta">' +
+                        '<span class="post-author">' + (post.author || 'Аноним') + badge + '</span>' +
+                        '<span class="post-date">' + (post.date || 'Дата не указана') + '</span>' +
+                    '</div>' +
+                    (firstImage
+                        ? '<div class="post-image-wrapper"><img src="' + firstImage + '" alt="' + post.title + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'"></div>'
+                        : '<div class="post-image-placeholder">' + (isAuthor ? '⭐' : '🌠') + '</div>') +
+                    '<h3>' + (post.title || 'Без заголовка') + '</h3>' +
+                    '<div class="post-content-preview">' + (previewText || 'Нет содержимого') + '</div>' +
+                    '<div class="read-more">Читать полностью →</div>' +
+                '</div>';
             }).join('');
         }
 
-        // ============ ЭФФЕКТЫ КАРТОЧЕК ============
         function initCardEffects() {
             const cards = document.querySelectorAll('.post-card');
 
@@ -1268,7 +1354,6 @@
             });
         }
 
-        // ============ МОДАЛЬНОЕ ОКНО ============
         function openPost(id) {
             const post = posts.find(p => p.id === id);
             if (!post) return;
@@ -1309,7 +1394,6 @@
 
         document.getElementById('closeModal').addEventListener('click', closeModal);
 
-        // ============ ЗАПУСК ============
         async function init() {
             await loadPosts();
             initCardEffects();
@@ -1319,10 +1403,6 @@
         }
 
         init();
-
-        console.log('EchoBlog.INC запущен!');
-        console.log('Используйте тег !image:(имя_фото) для вставки картинок');
-        console.log('Картинки должны лежать в папке images/');
     </script>
 </body>
 </html>
