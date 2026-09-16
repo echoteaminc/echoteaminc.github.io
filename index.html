@@ -53,14 +53,14 @@
             transition: none;
         }
 
-        /* ============ АМОГУСЫ НА ФОНЕ ============ */
+        /* ============ АМОГУСЫ НА ФОНЕ (z=3, под градиентами) ============ */
         #amongusLayer {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 6;
+            z-index: 3;
             pointer-events: none;
             overflow: hidden;
         }
@@ -69,19 +69,19 @@
             position: absolute;
             width: 100px;
             height: auto;
-            opacity: 0.9;
+            opacity: 1;
             will-change: left, top, transform;
             image-rendering: pixelated;
         }
 
-        /* ============ ГРАДИЕНТЫ ============ */
+        /* ============ ГРАДИЕНТЫ (z=5, выше амогусов) ============ */
         .gradient {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
             height: 50%;
-            z-index: 3;
+            z-index: 5;
             pointer-events: none;
             opacity: 0.45;
             background:
@@ -131,7 +131,7 @@
             left: 0;
             width: 100%;
             height: 35%;
-            z-index: 4;
+            z-index: 6;
             pointer-events: none;
             opacity: 0.45;
             background:
@@ -149,7 +149,7 @@
             left: 0;
             width: 100%;
             height: 40%;
-            z-index: 3;
+            z-index: 5;
             pointer-events: none;
             opacity: 0.45;
             background:
@@ -787,6 +787,68 @@
             margin-left: 8px;
         }
 
+        /* ============ ФУТЕР ============ */
+        .footer {
+            position: relative;
+            z-index: 10;
+            margin-top: 80px;
+            padding: 40px 20px 30px;
+            text-align: center;
+            border-top: 1px solid rgba(100, 200, 255, 0.15);
+        }
+
+        .footer .official-badge {
+            display: inline-block;
+            padding: 8px 24px;
+            background: rgba(0, 200, 80, 0.1);
+            border: 1px solid rgba(0, 200, 80, 0.35);
+            border-radius: 20px;
+            color: #69f0ae;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            box-shadow: 0 0 20px rgba(0, 200, 80, 0.15);
+        }
+
+        .footer .official-badge::before {
+            content: '✔ ';
+            color: #00e676;
+        }
+
+        .footer .official-text {
+            color: #90caf9;
+            font-size: 15px;
+            line-height: 1.8;
+            max-width: 720px;
+            margin: 0 auto 12px;
+        }
+
+        .footer .official-text strong {
+            color: #4fc3ff;
+            font-weight: 700;
+        }
+
+        .footer .official-text .team-name {
+            background: linear-gradient(135deg, #4fc3ff, #0066ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .footer .copyright {
+            color: #607d8b;
+            font-size: 12px;
+            margin-top: 18px;
+            letter-spacing: 0.5px;
+        }
+
+        .footer .copyright span {
+            color: #4fc3ff;
+        }
+
         /* ============ СКРОЛЛБАР ============ */
         ::-webkit-scrollbar {
             width: 8px;
@@ -904,7 +966,25 @@
 
             .amongus {
                 width: 65px;
-                opacity: 0.75;
+            }
+
+            .footer {
+                margin-top: 50px;
+                padding: 30px 15px 25px;
+            }
+
+            .footer .official-badge {
+                font-size: 11px;
+                padding: 6px 18px;
+                letter-spacing: 1px;
+            }
+
+            .footer .official-text {
+                font-size: 13px;
+            }
+
+            .footer .copyright {
+                font-size: 11px;
             }
         }
 
@@ -979,6 +1059,24 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ФУТЕР -->
+            <footer class="footer">
+                <div class="official-badge">Официальный сайт</div>
+                <p class="official-text">
+                    Настоящий сайт <strong>EchoBlog.INC</strong> является <strong>единственным официальным</strong>
+                    ресурсом проекта. Все материалы, публикации и загрузки размещены непосредственно
+                    командой <span class="team-name">EchoTeam.INC</span>.
+                </p>
+                <p class="official-text">
+                    Любые другие сайты, страницы или каналы, выдающие себя за нас, —
+                    <strong>не являются официальными</strong>. Пожалуйста, будьте внимательны
+                    и доверяйте только этому источнику.
+                </p>
+                <div class="copyright">
+                    © <span>EchoTeam.INC</span> — Все права защищены
+                </div>
+            </footer>
         </div>
     </div>
 
@@ -998,7 +1096,7 @@
     </div>
 
     <script>
-        // ============ ЕДИНЫЙ ЦИКЛ АНИМАЦИИ (не зависит от FPS и вкладок) ============
+        // ============ ЕДИНЫЙ ЦИКЛ АНИМАЦИИ ============
         let lastTime = performance.now();
 
         const starsData = [];
@@ -1008,32 +1106,26 @@
             return Math.random() * (max - min) + min;
         }
 
-        // ============ ЗВЁЗДЫ ============
+        // ============ ЗВЁЗДЫ (без рандомного размера — все одинаковые) ============
         (function() {
             const starsContainer = document.getElementById('stars');
             const STAR_COUNT = 300;
-            const sizes = [0.5, 0.7, 0.9, 1.1, 1.4, 1.7, 2.0, 2.5, 3.0, 3.5];
+            const FIXED_SIZE = 1.5; // фиксированный размер всех звёзд
 
             for (let i = 0; i < STAR_COUNT; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
-                const size = sizes[Math.floor(Math.random() * sizes.length)];
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
+                star.style.width = FIXED_SIZE + 'px';
+                star.style.height = FIXED_SIZE + 'px';
                 const left = (i / STAR_COUNT) * 130 - 20;
                 star.style.left = left + '%';
                 star.style.top = Math.random() * 100 + '%';
                 star.style.opacity = 0.4 + Math.random() * 0.6;
-                if (size > 2.5) {
-                    star.style.boxShadow = '0 0 5px rgba(255,255,255,0.4)';
-                }
                 starsContainer.appendChild(star);
 
-                // Скорость в %/сек — одинаковая всегда
                 starsData.push({
                     el: star,
-                    speed: 1.5 + Math.random() * 3.5,
-                    sizes: sizes
+                    speed: 1.5 + Math.random() * 3.5
                 });
             }
         })();
@@ -1073,14 +1165,10 @@
                     el: img,
                     left: startLeft,
                     baseTop: baseTop,
-
-                    // Скорость в %/сек (амогусы быстрее звёзд)
                     speed: randomBetween(2.5, 5.5),
-
                     floatAmp: randomBetween(2.5, 5.5),
                     floatFreq: randomBetween(0.9, 1.6),
                     floatPhase: randomBetween(0, Math.PI * 2),
-
                     rotAmp: randomBetween(4, 9),
                     rotPhase: randomBetween(0, Math.PI * 2),
                     rotFreq: randomBetween(1.0, 1.8),
@@ -1105,9 +1193,6 @@
                 if (left < -20) {
                     left = 100 + Math.random() * 30;
                     star.style.top = Math.random() * 100 + '%';
-                    const size = s.sizes[Math.floor(Math.random() * s.sizes.length)];
-                    star.style.width = size + 'px';
-                    star.style.height = size + 'px';
                     star.style.opacity = 0.4 + Math.random() * 0.6;
                     s.speed = 1.5 + Math.random() * 3.5;
                 }
@@ -1141,7 +1226,8 @@
 
                 img.style.left = a.left + '%';
                 img.style.top = top + '%';
-                img.style.transform = 'scaleX(-1) rotate(' + rotate + 'deg)';
+                // scaleX(1) — картинка НЕ отражена (смотрит вправо, как оригинал)
+                img.style.transform = 'scaleX(1) rotate(' + rotate + 'deg)';
             }
 
             requestAnimationFrame(tick);
