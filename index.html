@@ -5,1028 +5,529 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EchoBlog.INC</title>
     <style>
-        /* ============ ОБЩИЕ СТИЛИ ============ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html,
-        body {
-            width: 100%;
-            min-height: 100vh;
-            overflow-x: hidden;
-            background: #000;
-            color: #fff;
+        html, body {
+            width: 100%; min-height: 100vh; overflow-x: hidden;
+            background: #000; color: #fff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        body {
-            overflow-y: auto;
-        }
+        body { overflow-y: auto; }
 
         .container {
-            position: relative;
-            width: 100%;
-            min-height: 100vh;
-            background: #000000;
-            overflow: hidden;
+            position: relative; width: 100%; min-height: 100vh;
+            background: #000; overflow: hidden;
         }
 
-        /* ============ ЗВЁЗДЫ ============ */
+        /* ===== ЗВЁЗДЫ ===== */
         #stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-            overflow: visible;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none; display: block;
         }
 
-        .star {
-            position: absolute;
-            background: #ffffff;
-            border-radius: 50%;
-            transition: none;
-        }
-
-        /* ============ АМОГУСЫ НА ФОНЕ (z=3, под градиентами) ============ */
+        /* ===== АМОГУСЫ ===== */
         #amongusLayer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 3;
-            pointer-events: none;
-            overflow: hidden;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 3; pointer-events: none; overflow: hidden; contain: strict;
         }
-
         .amongus {
-            position: absolute;
-            width: 100px;
-            height: auto;
-            opacity: 1;
-            will-change: left, top, transform;
-            image-rendering: pixelated;
+            position: absolute; top: 0; left: 0;
+            width: 100px; height: auto;
+            will-change: transform; image-rendering: pixelated;
+            transform: translate3d(0,0,0);
+            transition: opacity 0.4s ease;
         }
 
-        /* ============ ГРАДИЕНТЫ (z=5, выше амогусов) ============ */
+        /* ===== ГРАДИЕНТ ===== */
         .gradient {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            z-index: 5;
-            pointer-events: none;
-            opacity: 0.45;
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 50%;
+            z-index: 5; pointer-events: none; opacity: 0.55;
             background:
                 radial-gradient(ellipse at 50% 100%,
-                    rgba(0, 80, 255, 0.95) 0%,
-                    rgba(0, 60, 220, 0.8) 15%,
-                    rgba(0, 40, 180, 0.6) 30%,
-                    rgba(0, 25, 120, 0.4) 50%,
-                    rgba(0, 10, 60, 0.2) 70%,
-                    transparent 100%);
-        }
-
-        .gradient::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 40%;
-            background:
-                radial-gradient(ellipse at 50% 100%,
-                    rgba(80, 180, 255, 0.7) 0%,
-                    rgba(40, 140, 255, 0.4) 25%,
-                    rgba(0, 100, 255, 0.15) 50%,
-                    transparent 80%);
-            filter: blur(8px);
-        }
-
-        .gradient::after {
-            content: '';
-            position: absolute;
-            bottom: 5%;
-            left: 5%;
-            width: 90%;
-            height: 50%;
-            background:
-                radial-gradient(ellipse at 30% 100%,
-                    rgba(100, 200, 255, 0.25) 0%,
-                    rgba(50, 150, 255, 0.1) 40%,
-                    transparent 70%);
-            filter: blur(25px);
-        }
-
-        .gradient-glow {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 35%;
-            z-index: 6;
-            pointer-events: none;
-            opacity: 0.45;
-            background:
+                    rgba(0,80,255,0.95) 0%, rgba(0,55,200,0.7) 20%,
+                    rgba(0,30,150,0.4) 45%, rgba(0,10,60,0.15) 70%, transparent 100%),
                 linear-gradient(to top,
-                    rgba(0, 100, 255, 0.5) 0%,
-                    rgba(0, 60, 200, 0.25) 30%,
-                    rgba(0, 30, 150, 0.1) 60%,
-                    transparent 100%);
-            filter: blur(15px);
+                    rgba(0,100,255,0.35) 0%, rgba(0,30,150,0.08) 60%, transparent 100%);
         }
 
-        .gradient-edge {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 40%;
-            z-index: 5;
-            pointer-events: none;
-            opacity: 0.45;
-            background:
-                radial-gradient(ellipse at 20% 100%,
-                    rgba(0, 150, 255, 0.15) 0%,
-                    transparent 50%),
-                radial-gradient(ellipse at 80% 100%,
-                    rgba(0, 150, 255, 0.15) 0%,
-                    transparent 50%);
-            filter: blur(30px);
-        }
-
-        /* ============ КОНТЕНТ ============ */
+        /* ===== КОНТЕНТ ===== */
         .content {
-            position: relative;
-            z-index: 10;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 30px 20px 100px;
+            position: relative; z-index: 10; max-width: 1200px;
+            margin: 0 auto; padding: 30px 20px 100px;
         }
 
-        /* ============ ШАПКА ============ */
+        /* ===== ШАПКА ===== */
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 30px;
-            background: rgba(0, 20, 60, 0.6);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid rgba(100, 200, 255, 0.2);
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-            gap: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 30px; background: rgba(0,20,60,0.75);
+            border-radius: 20px; border: 1px solid rgba(100,200,255,0.2);
+            margin-bottom: 40px; flex-wrap: wrap; gap: 15px;
         }
-
         .header h1 {
             font-size: 28px;
             background: linear-gradient(135deg, #4fc3ff, #0066ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(0, 100, 255, 0.3);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
+        .header-right { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 
-        .header-right {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
+        .header-btn {
+            padding: 10px 22px; border-radius: 14px; font-size: 15px; font-weight: 700;
+            cursor: pointer; font-family: inherit;
+            transition: transform .25s, background .25s, border-color .25s, color .25s;
         }
-
-        /* ============ СЧЁТЧИК ПОСЕТИТЕЛЕЙ ============ */
-        .visitor-counter {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 16px;
-            background: rgba(0, 200, 80, 0.1);
-            border: 1px solid rgba(0, 200, 80, 0.2);
-            border-radius: 20px;
-            font-size: 13px;
-            color: #69f0ae;
+        .donate-btn {
+            background: rgba(120,120,120,0.15);
+            border: 1px solid rgba(160,160,160,0.35); color: #b0b0b0;
         }
-
-        .visitor-counter .count {
-            font-weight: 700;
-            font-size: 16px;
-            color: #fff;
-        }
-
-        /* ============ ВКЛАДКИ ============ */
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .tab-btn {
-            padding: 12px 28px;
-            background: rgba(0, 20, 60, 0.4);
-            border: 1px solid rgba(100, 200, 255, 0.1);
-            border-radius: 14px;
-            color: #90caf9;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-
-        .tab-btn:hover {
-            background: rgba(0, 40, 100, 0.4);
-            border-color: rgba(100, 200, 255, 0.3);
+        .donate-btn:hover {
+            background: rgba(150,150,150,0.25);
+            border-color: rgba(200,200,200,0.5); color: #e0e0e0;
             transform: translateY(-2px);
         }
+        .credits-btn {
+            background: rgba(0,100,255,0.15);
+            border: 1px solid rgba(100,200,255,0.3); color: #4fc3ff;
+        }
+        .credits-btn:hover {
+            background: rgba(0,100,255,0.3);
+            border-color: #4fc3ff; color: #fff; transform: translateY(-2px);
+        }
 
+        /* ===== ПАНЕЛЬ ТИТРОВ ===== */
+        .credits-panel {
+            position: fixed; top: 0; left: 0; width: 380px; max-width: 90vw; height: 100vh;
+            background: linear-gradient(160deg, #0a1a3a, #04081a);
+            border-right: 1px solid rgba(100,200,255,0.25);
+            box-shadow: 20px 0 60px rgba(0,0,0,0.7);
+            z-index: 2000;
+            transform: translate3d(-100%,0,0);
+            transition: transform .35s cubic-bezier(.22,1,.36,1);
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .credits-panel.open { transform: translate3d(0,0,0); }
+        .credits-panel-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 24px 24px 18px;
+            border-bottom: 1px solid rgba(100,200,255,0.15); flex-shrink: 0;
+        }
+        .credits-panel-header h2 {
+            font-size: 22px;
+            background: linear-gradient(135deg, #4fc3ff, #0066ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .credits-close {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; width: 36px; height: 36px; border-radius: 50%;
+            font-size: 20px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background .25s, border-color .25s, transform .25s;
+        }
+        .credits-close:hover {
+            background: rgba(255,23,68,0.2); border-color: #ff1744;
+            transform: rotate(90deg);
+        }
+        .credits-panel-body {
+            padding: 20px 24px 40px; overflow-y: auto; flex: 1;
+            -webkit-overflow-scrolling: touch;
+        }
+        .credits-section { margin-bottom: 28px; }
+        .credits-section-title {
+            font-size: 12px; font-weight: 800; letter-spacing: 1.5px;
+            text-transform: uppercase; color: #4fc3ff;
+            margin-bottom: 14px; opacity: 0.8;
+        }
+        .credits-person {
+            display: flex; align-items: center; gap: 14px;
+            padding: 12px 14px; background: rgba(0,20,60,0.4);
+            border: 1px solid rgba(100,200,255,0.1);
+            border-radius: 14px; margin-bottom: 10px;
+            transition: border-color .25s, background .25s, transform .25s;
+        }
+        .credits-person:hover {
+            border-color: rgba(100,200,255,0.35);
+            background: rgba(0,40,100,0.4); transform: translateX(4px);
+        }
+        .credits-avatar, .credits-avatar-placeholder {
+            width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
+            border: 2px solid rgba(79,195,255,0.4);
+        }
+        .credits-avatar { object-fit: cover; background: rgba(0,0,0,0.3); }
+        .credits-avatar-placeholder {
+            background: linear-gradient(135deg, rgba(0,80,255,0.3), rgba(0,40,180,0.15));
+            display: flex; align-items: center; justify-content: center; font-size: 20px;
+        }
+        .credits-info { min-width: 0; }
+        .credits-name {
+            font-size: 15px; font-weight: 700; color: #fff;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .credits-role { font-size: 12px; color: #90caf9; opacity: 0.8; margin-top: 2px; }
+        .credits-link {
+            font-size: 11px; color: #4fc3ff; text-decoration: none;
+            opacity: 0.7; display: inline-block; margin-top: 3px;
+        }
+        .credits-link:hover { opacity: 1; text-decoration: underline; }
+        .credits-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            z-index: 1999; opacity: 0; pointer-events: none;
+            transition: opacity .35s ease;
+        }
+        .credits-overlay.open { opacity: 1; pointer-events: auto; }
+        .credits-loading {
+            text-align: center; padding: 40px 0;
+            color: #4fc3ff; font-size: 14px;
+        }
+
+        /* ===== ВРЕМЕННОЕ СООБЩЕНИЕ ===== */
+        .temp-message {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate3d(-50%,-50%,0) scale(0.85);
+            padding: 22px 48px;
+            background: linear-gradient(145deg, rgba(30,0,0,0.95), rgba(20,0,0,0.95));
+            border: 2px solid rgba(255,60,60,0.6);
+            border-radius: 18px; color: #ff5252;
+            font-size: 26px; font-weight: 800; letter-spacing: 1.5px;
+            text-transform: uppercase; z-index: 3000;
+            pointer-events: none; opacity: 0; white-space: nowrap;
+            transition: opacity .4s ease, transform .4s cubic-bezier(.22,1,.36,1);
+            box-shadow: 0 0 40px rgba(255,60,60,0.35), 0 20px 60px rgba(0,0,0,0.7);
+        }
+        .temp-message.show { opacity: 1; transform: translate3d(-50%,-50%,0) scale(1); }
+
+        /* ===== ВКЛАДКИ ===== */
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; align-items: center; }
+        .tab-btn {
+            padding: 12px 28px; background: rgba(0,20,60,0.4);
+            border: 1px solid rgba(100,200,255,0.1);
+            border-radius: 14px; color: #90caf9;
+            font-size: 16px; font-weight: 600; cursor: pointer;
+            transition: background .25s, border-color .25s, color .25s, transform .25s;
+        }
+        .tab-btn:hover {
+            background: rgba(0,40,100,0.4);
+            border-color: rgba(100,200,255,0.3);
+            transform: translateY(-2px);
+        }
         .tab-btn.active {
-            background: rgba(0, 100, 255, 0.2);
-            border-color: #4fc3ff;
-            color: #4fc3ff;
-            box-shadow: 0 0 30px rgba(79, 195, 255, 0.1);
+            background: rgba(0,100,255,0.2);
+            border-color: #4fc3ff; color: #4fc3ff;
         }
-
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn .35s ease; }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ============ СТРАНИЦА DOWNLOAD ============ */
-        .download-page {
-            text-align: center;
-            padding: 40px 20px;
-        }
-
+        /* ===== DOWNLOAD ===== */
+        .download-page { text-align: center; padding: 40px 20px; }
         .download-page h2 {
-            font-size: 36px;
-            margin-bottom: 20px;
+            font-size: 36px; margin-bottom: 20px;
             background: linear-gradient(135deg, #ff6f00, #ff9100);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
         .download-page p {
-            color: #b0bec5;
-            font-size: 18px;
-            margin-bottom: 30px;
-            line-height: 1.6;
+            color: #b0bec5; font-size: 18px;
+            margin-bottom: 30px; line-height: 1.6;
         }
-
         .download-page .funky-image {
-            width: 100%;
-            max-width: 500px;
-            border-radius: 20px;
-            margin: 0 auto 30px;
-            display: block;
-            box-shadow: 0 10px 40px rgba(255, 145, 0, 0.2);
-            border: 2px solid rgba(255, 145, 0, 0.2);
-            transition: all 0.3s ease;
+            width: 100%; max-width: 500px;
+            border-radius: 20px; margin: 0 auto 30px; display: block;
+            box-shadow: 0 10px 40px rgba(255,145,0,0.2);
+            border: 2px solid rgba(255,145,0,0.2);
+            transition: transform .3s ease;
         }
-
-        .download-page .funky-image:hover {
-            transform: scale(1.02);
-            box-shadow: 0 15px 50px rgba(255, 145, 0, 0.3);
-        }
-
+        .download-page .funky-image:hover { transform: scale(1.02); }
         .funky-btn {
-            display: inline-block;
-            padding: 20px 60px;
+            display: inline-block; padding: 20px 60px;
             background: linear-gradient(135deg, #ff6f00, #ff9100);
-            border: none;
-            border-radius: 20px;
-            font-size: 28px;
-            font-weight: 800;
-            color: #fff;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 30px rgba(255, 145, 0, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            position: relative;
-            overflow: hidden;
+            border: none; border-radius: 20px;
+            font-size: 28px; font-weight: 800; color: #fff; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 2px;
+            box-shadow: 0 8px 30px rgba(255,145,0,0.3);
+            transition: transform .25s ease, box-shadow .25s ease;
         }
-
-        .funky-btn::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent 70%);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .funky-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 40px rgba(255, 145, 0, 0.5);
-        }
-
-        .funky-btn:active {
-            transform: scale(0.95);
-        }
-
+        .funky-btn:hover { transform: scale(1.05); box-shadow: 0 12px 40px rgba(255,145,0,0.5); }
+        .funky-btn:active { transform: scale(0.95); }
         .sub-buttons {
-            display: none;
-            margin-top: 40px;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            animation: fadeIn 0.5s ease;
+            display: none; margin-top: 40px; gap: 20px;
+            justify-content: center; flex-wrap: wrap;
         }
-
-        .sub-buttons.open {
-            display: flex;
-        }
-
+        .sub-buttons.open { display: flex; animation: fadeIn .4s ease; }
         .sub-btn {
-            display: inline-block;
-            padding: 16px 40px;
-            border-radius: 16px;
-            font-size: 18px;
-            font-weight: 700;
-            color: #fff;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
+            display: inline-block; padding: 16px 40px; border-radius: 16px;
+            font-size: 18px; font-weight: 700; color: #fff;
+            text-decoration: none; border: 2px solid transparent;
+            transition: transform .25s, background .25s, box-shadow .25s,
+                        color .25s, border-color .25s;
         }
-
-        .sub-btn:hover {
-            transform: translateY(-5px);
-        }
-
+        .sub-btn:hover { transform: translateY(-5px); }
         .sub-btn.gamebanana {
             background: linear-gradient(135deg, #1a1a2e, #16213e);
-            border-color: #ff6b35;
-            color: #ff6b35;
+            border-color: #ff6b35; color: #ff6b35;
         }
-
         .sub-btn.gamebanana:hover {
             background: linear-gradient(135deg, #ff6b35, #e85d2c);
-            color: #fff;
-            border-color: #ff6b35;
-            box-shadow: 0 8px 30px rgba(255, 107, 53, 0.3);
+            color: #fff; border-color: #ff6b35;
         }
-
         .sub-btn.gamejolt {
             background: linear-gradient(135deg, #1a1a2e, #16213e);
-            border-color: #00d4ff;
-            color: #00d4ff;
+            border-color: #00d4ff; color: #00d4ff;
         }
-
         .sub-btn.gamejolt:hover {
             background: linear-gradient(135deg, #00d4ff, #0099cc);
-            color: #fff;
-            border-color: #00d4ff;
-            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.3);
+            color: #fff; border-color: #00d4ff;
         }
 
-        /* ============ ПОСТЫ ============ */
+        /* ===== ПОСТЫ ===== */
         .posts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 30px;
-            margin-top: 10px;
+            gap: 30px; margin-top: 10px;
         }
-
         .post-card {
-            background: rgba(0, 20, 60, 0.4);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(100, 200, 255, 0.1);
-            border-radius: 20px;
-            padding: 25px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            min-height: 300px;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
+            background: rgba(0,20,60,0.55);
+            border: 1px solid rgba(100,200,255,0.1);
+            border-radius: 20px; padding: 25px;
+            cursor: pointer; position: relative; overflow: hidden;
+            display: flex; flex-direction: column;
+            height: 100%; min-height: 300px;
+            user-select: none; -webkit-tap-highlight-color: transparent;
+            contain: layout paint;
+            transition: transform .25s ease, border-color .25s, box-shadow .25s;
         }
-
-        .post-card:active {
-            transform: scale(0.96);
-            transition-duration: 0.05s;
-        }
-
+        .post-card:active { transform: scale(0.97); }
         .post-card .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(79, 195, 255, 0.3);
+            position: absolute; border-radius: 50%;
+            background: rgba(79,195,255,0.3);
             transform: scale(0);
-            animation: rippleAnim 0.8s ease-out forwards;
+            animation: rippleAnim .7s ease-out forwards;
             pointer-events: none;
         }
-
         @keyframes rippleAnim {
-            0% { transform: scale(0); opacity: 0.8; }
+            0% { transform: scale(0); opacity: .8; }
             100% { transform: scale(4); opacity: 0; }
         }
-
-        .post-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 20px;
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(79, 195, 255, 0.05), transparent 60%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .post-card:hover::after {
-            opacity: 1;
-        }
-
         .post-card:hover {
             transform: translateY(-5px);
-            border-color: rgba(100, 200, 255, 0.3);
-            box-shadow: 0 10px 40px rgba(0, 100, 255, 0.15);
+            border-color: rgba(100,200,255,0.3);
+            box-shadow: 0 10px 40px rgba(0,100,255,0.15);
         }
-
         .post-card.author-post {
-            border-color: rgba(255, 179, 0, 0.35);
-            background: linear-gradient(135deg, rgba(40, 25, 0, 0.5), rgba(0, 20, 60, 0.4));
-            box-shadow: 0 0 30px rgba(255, 179, 0, 0.08);
+            border-color: rgba(255,179,0,0.35);
+            background: linear-gradient(135deg, rgba(40,25,0,0.5), rgba(0,20,60,0.55));
         }
-        .post-card.author-post:hover {
-            border-color: rgba(255, 179, 0, 0.6);
-            box-shadow: 0 10px 40px rgba(255, 179, 0, 0.2);
-        }
-        .post-card.author-post .post-author {
-            color: #ffd54f;
-        }
-        .post-card.author-post .read-more {
-            color: #ffb300;
-        }
-
+        .post-card.author-post:hover { border-color: rgba(255,179,0,0.6); }
+        .post-card.author-post .post-author { color: #ffd54f; }
+        .post-card.author-post .read-more { color: #ffb300; }
         .post-card .post-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            font-size: 12px;
-            color: #90caf9;
-            flex-shrink: 0;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px; font-size: 12px; color: #90caf9; flex-shrink: 0;
         }
-
-        .post-card .post-author {
-            font-weight: 600;
-            color: #4fc3ff;
-        }
-
-        .post-card .post-date {
-            opacity: 0.7;
-        }
-
-        .post-card h3 {
-            font-size: 20px;
-            margin-bottom: 12px;
-            color: #fff;
-            flex-shrink: 0;
-        }
-
+        .post-card .post-author { font-weight: 600; color: #4fc3ff; }
+        .post-card .post-date { opacity: 0.7; }
+        .post-card h3 { font-size: 20px; margin-bottom: 12px; color: #fff; flex-shrink: 0; }
         .post-card .post-content-preview {
-            color: #b0bec5;
-            line-height: 1.6;
-            font-size: 14px;
-            margin-bottom: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            flex-grow: 1;
+            color: #b0bec5; line-height: 1.6; font-size: 14px;
+            margin-bottom: 15px; flex-grow: 1;
+            display: -webkit-box; -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical; overflow: hidden;
         }
-
         .post-card .post-image-wrapper {
-            width: 100%;
-            height: 200px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.03);
-            flex-shrink: 0;
-            position: relative;
+            width: 100%; height: 200px; border-radius: 12px;
+            margin-bottom: 15px; overflow: hidden;
+            background: rgba(255,255,255,0.03); flex-shrink: 0;
         }
-
         .post-card .post-image-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform .3s ease;
         }
-
-        .post-card:hover .post-image-wrapper img {
-            transform: scale(1.03);
-        }
-
+        .post-card:hover .post-image-wrapper img { transform: scale(1.03); }
         .post-card .post-image-placeholder {
-            width: 100%;
-            height: 200px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, rgba(0, 80, 255, 0.1), rgba(0, 40, 180, 0.05));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.1);
-            font-size: 48px;
-            flex-shrink: 0;
+            width: 100%; height: 200px; border-radius: 12px;
+            margin-bottom: 15px; flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(0,80,255,0.1), rgba(0,40,180,0.05));
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255,255,255,0.1); font-size: 48px;
         }
-
         .post-card .read-more {
-            color: #4fc3ff;
-            font-size: 13px;
-            font-weight: 600;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-            flex-shrink: 0;
-            margin-top: auto;
+            color: #4fc3ff; font-size: 13px; font-weight: 600;
+            opacity: 0.7; margin-top: auto; flex-shrink: 0;
+            transition: opacity .3s;
         }
-
-        .post-card:hover .read-more {
-            opacity: 1;
-        }
-
+        .post-card:hover .read-more { opacity: 1; }
         .post-card .dev-badge {
-            display: inline-block;
-            padding: 2px 12px;
+            display: inline-block; padding: 2px 12px;
             background: linear-gradient(135deg, #ff6f00, #ff9100);
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 700;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            border-radius: 12px; font-size: 10px; font-weight: 700;
+            color: #fff; text-transform: uppercase; letter-spacing: 0.5px;
             margin-left: 8px;
         }
-
         .author-badge {
-            display: inline-block;
-            padding: 2px 10px;
+            display: inline-block; padding: 2px 10px;
             background: linear-gradient(135deg, #ffb300, #ff8f00);
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 800;
-            color: #3e1f00;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-left: 8px;
-            box-shadow: 0 0 12px rgba(255, 179, 0, 0.4);
+            border-radius: 12px; font-size: 10px; font-weight: 800;
+            color: #3e1f00; text-transform: uppercase;
+            letter-spacing: 0.8px; margin-left: 8px;
         }
-
-        .empty-posts {
-            text-align: center;
-            padding: 60px 20px;
-            color: #90caf9;
+        .empty-posts, .loading {
+            text-align: center; padding: 40px 20px; color: #90caf9;
             grid-column: 1 / -1;
         }
+        .empty-posts .empty-icon { font-size: 64px; margin-bottom: 20px; opacity: 0.3; }
+        .empty-posts .empty-title { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+        .empty-posts .empty-desc { font-size: 16px; opacity: 0.6; max-width: 400px; margin: 0 auto; line-height: 1.6; }
 
-        .empty-posts .empty-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-            opacity: 0.3;
-        }
-
-        .empty-posts .empty-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-
-        .empty-posts .empty-desc {
-            font-size: 16px;
-            opacity: 0.6;
-            max-width: 400px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #4fc3ff;
-            font-size: 18px;
-            grid-column: 1 / -1;
-        }
-
-        /* ============ МОДАЛЬНОЕ ОКНО ============ */
+        /* ===== МОДАЛКА ===== */
         .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 30px;
-            animation: fadeIn 0.3s ease;
-            overflow-y: auto;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 1000;
+            justify-content: center; align-items: center;
+            padding: 30px; overflow-y: auto;
         }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
+        .modal-overlay.active { display: flex; animation: fadeIn .25s ease; }
         .modal-content {
             background: linear-gradient(145deg, #0a1a3a, #06102a);
-            border-radius: 24px;
-            max-width: 800px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 40px;
-            border: 1px solid rgba(100, 200, 255, 0.2);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+            border-radius: 24px; max-width: 800px; width: 100%;
+            max-height: 90vh; overflow-y: auto; padding: 40px;
+            border: 1px solid rgba(100,200,255,0.2);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.9);
             position: relative;
         }
-
-        .modal-content::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .modal-content::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 4px;
-        }
-
+        .modal-content::-webkit-scrollbar { width: 4px; }
         .modal-content::-webkit-scrollbar-thumb {
-            background: rgba(79, 195, 255, 0.3);
-            border-radius: 4px;
+            background: rgba(79,195,255,0.3); border-radius: 4px;
         }
-
         .modal-close {
-            position: sticky;
-            top: 0;
-            float: right;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: sticky; top: 0; float: right;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; width: 40px; height: 40px; border-radius: 50%;
+            font-size: 24px; cursor: pointer; margin-left: auto; margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: center;
+            transition: background .25s, border-color .25s, transform .25s;
             z-index: 10;
-            margin-left: auto;
-            margin-bottom: 10px;
         }
-
         .modal-close:hover {
-            background: rgba(255, 23, 68, 0.2);
-            border-color: #ff1744;
+            background: rgba(255,23,68,0.2); border-color: #ff1744;
             transform: rotate(90deg);
         }
-
         .modal-content .post-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            font-size: 13px;
-            color: #90caf9;
-            clear: both;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; font-size: 13px; color: #90caf9; clear: both;
         }
-
-        .modal-content .post-author {
-            font-weight: 600;
-            color: #4fc3ff;
-        }
-
-        .modal-content .post-date {
-            opacity: 0.7;
-        }
-
-        .modal-content h2 {
-            font-size: 28px;
-            margin-bottom: 20px;
-            color: #fff;
-            line-height: 1.3;
-        }
-
+        .modal-content .post-author { font-weight: 600; color: #4fc3ff; }
+        .modal-content .post-date { opacity: 0.7; }
+        .modal-content h2 { font-size: 28px; margin-bottom: 20px; color: #fff; line-height: 1.3; }
         .modal-content .post-full-content {
-            color: #b0bec5;
-            line-height: 1.8;
-            font-size: 16px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            color: #b0bec5; line-height: 1.8; font-size: 16px;
+            white-space: pre-wrap; word-wrap: break-word;
         }
-
         .modal-content .post-full-content .modal-image-wrapper {
-            width: 100%;
-            margin: 15px 0;
-            border-radius: 12px;
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.3);
-            text-align: center;
+            width: 100%; margin: 15px 0; border-radius: 12px;
+            overflow: hidden; background: rgba(0,0,0,0.3); text-align: center;
         }
-
         .modal-content .post-full-content .modal-image-wrapper img {
-            width: 100%;
-            max-height: 500px;
-            object-fit: contain;
-            border-radius: 12px;
-            display: block;
+            width: 100%; max-height: 500px; object-fit: contain;
+            border-radius: 12px; display: block;
         }
-
         .modal-content .dev-badge {
-            display: inline-block;
-            padding: 2px 12px;
+            display: inline-block; padding: 2px 12px;
             background: linear-gradient(135deg, #ff6f00, #ff9100);
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 700;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-left: 8px;
+            border-radius: 12px; font-size: 10px; font-weight: 700;
+            color: #fff; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-left: 8px;
         }
 
-        /* ============ ФУТЕР ============ */
+        /* ===== ФУТЕР ===== */
         .footer {
-            position: relative;
-            z-index: 10;
-            margin-top: 80px;
-            padding: 40px 20px 30px;
-            text-align: center;
-            border-top: 1px solid rgba(100, 200, 255, 0.15);
+            position: relative; z-index: 10; margin-top: 80px;
+            padding: 40px 20px 30px; text-align: center;
+            border-top: 1px solid rgba(100,200,255,0.15);
         }
-
         .footer .official-badge {
-            display: inline-block;
-            padding: 8px 24px;
-            background: rgba(0, 200, 80, 0.1);
-            border: 1px solid rgba(0, 200, 80, 0.35);
-            border-radius: 20px;
-            color: #69f0ae;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 18px;
-            box-shadow: 0 0 20px rgba(0, 200, 80, 0.15);
+            display: inline-block; padding: 8px 24px;
+            background: rgba(0,200,80,0.1);
+            border: 1px solid rgba(0,200,80,0.35);
+            border-radius: 20px; color: #69f0ae;
+            font-size: 13px; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; margin-bottom: 18px;
         }
-
-        .footer .official-badge::before {
-            content: '✔ ';
-            color: #00e676;
-        }
-
+        .footer .official-badge::before { content: '✔ '; color: #00e676; }
         .footer .official-text {
-            color: #90caf9;
-            font-size: 15px;
-            line-height: 1.8;
-            max-width: 720px;
-            margin: 0 auto 12px;
+            color: #90caf9; font-size: 15px; line-height: 1.8;
+            max-width: 720px; margin: 0 auto 12px;
         }
-
-        .footer .official-text strong {
-            color: #4fc3ff;
-            font-weight: 700;
-        }
-
+        .footer .official-text strong { color: #4fc3ff; font-weight: 700; }
         .footer .official-text .team-name {
             background: linear-gradient(135deg, #4fc3ff, #0066ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             font-weight: 800;
-            letter-spacing: 0.5px;
         }
-
         .footer .copyright {
-            color: #607d8b;
-            font-size: 12px;
-            margin-top: 18px;
-            letter-spacing: 0.5px;
+            color: #607d8b; font-size: 12px; margin-top: 18px;
         }
+        .footer .copyright span { color: #4fc3ff; }
 
-        .footer .copyright span {
-            color: #4fc3ff;
-        }
-
-        /* ============ СКРОЛЛБАР ============ */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 4px;
-        }
-
+        /* ===== СКРОЛЛБАР ===== */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, rgba(79, 195, 255, 0.3), rgba(0, 100, 255, 0.2));
-            border-radius: 4px;
-            transition: all 0.3s;
+            background: rgba(79,195,255,0.25); border-radius: 4px;
         }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(79,195,255,0.45); }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, rgba(79, 195, 255, 0.5), rgba(0, 100, 255, 0.3));
-        }
-
-        /* ============ АДАПТИВНОСТЬ ============ */
+        /* ===== АДАПТИВ ===== */
         @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                align-items: stretch;
-                text-align: center;
-            }
-
-            .header-right {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            .posts-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .modal-content {
-                padding: 25px;
-                margin: 10px;
-                max-height: 95vh;
-            }
-
-            .modal-content h2 {
-                font-size: 22px;
-            }
-
+            .header { flex-direction: column; align-items: stretch; text-align: center; }
+            .header-right { justify-content: center; flex-wrap: wrap; }
+            .header-btn { padding: 8px 16px; font-size: 13px; }
+            .credits-panel { width: 320px; }
+            .temp-message { font-size: 20px; padding: 18px 32px; }
+            .posts-grid { grid-template-columns: 1fr; gap: 20px; }
+            .modal-content { padding: 25px; margin: 10px; max-height: 95vh; }
+            .modal-content h2 { font-size: 22px; }
             .modal-close {
-                top: 10px;
-                right: 15px;
-                width: 35px;
-                height: 35px;
-                font-size: 20px;
-                float: none;
-                margin: 0 0 10px auto;
+                width: 35px; height: 35px; font-size: 20px;
+                float: none; margin: 0 0 10px auto;
             }
-
-            .post-card .post-image-wrapper {
-                height: 180px;
-            }
-
-            .post-card .post-image-placeholder {
-                height: 180px;
-                font-size: 36px;
-            }
-
-            .modal-content .post-full-content .modal-image-wrapper img {
-                max-height: 300px;
-            }
-
-            .download-page h2 {
-                font-size: 28px;
-            }
-
-            .download-page .funky-image {
-                max-width: 100%;
-            }
-
-            .funky-btn {
-                padding: 16px 40px;
-                font-size: 22px;
-            }
-
-            .sub-btn {
-                padding: 14px 30px;
-                font-size: 16px;
-                width: 100%;
-            }
-
-            .sub-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .tab-btn {
-                padding: 10px 20px;
-                font-size: 14px;
-                flex: 1;
-                text-align: center;
-            }
-
-            .visitor-counter {
-                font-size: 12px;
-                padding: 4px 12px;
-            }
-
-            .visitor-counter .count {
-                font-size: 14px;
-            }
-
-            .post-card:active {
-                transform: scale(0.97);
-            }
-
-            .amongus {
-                width: 65px;
-            }
-
-            .footer {
-                margin-top: 50px;
-                padding: 30px 15px 25px;
-            }
-
-            .footer .official-badge {
-                font-size: 11px;
-                padding: 6px 18px;
-                letter-spacing: 1px;
-            }
-
-            .footer .official-text {
-                font-size: 13px;
-            }
-
-            .footer .copyright {
-                font-size: 11px;
-            }
+            .post-card .post-image-wrapper,
+            .post-card .post-image-placeholder { height: 180px; }
+            .post-card .post-image-placeholder { font-size: 36px; }
+            .modal-content .post-full-content .modal-image-wrapper img { max-height: 300px; }
+            .download-page h2 { font-size: 28px; }
+            .download-page .funky-image { max-width: 100%; }
+            .funky-btn { padding: 16px 40px; font-size: 22px; }
+            .sub-btn { padding: 14px 30px; font-size: 16px; width: 100%; }
+            .sub-buttons { flex-direction: column; align-items: center; }
+            .tab-btn { padding: 10px 20px; font-size: 14px; flex: 1; text-align: center; }
+            .amongus { width: 65px; }
+            .footer { margin-top: 50px; padding: 30px 15px 25px; }
         }
-
-        @media (min-width: 1400px) {
-            .gradient {
-                height: 40%;
-            }
-        }
+        @media (prefers-reduced-motion: reduce) { .amongus { display: none; } }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- ЗВЁЗДЫ -->
-        <div id="stars"></div>
-
-        <!-- АМОГУСЫ НА ФОНЕ -->
+        <canvas id="stars"></canvas>
         <div id="amongusLayer"></div>
-
         <div class="gradient"></div>
-        <div class="gradient-glow"></div>
-        <div class="gradient-edge"></div>
 
-        <!-- КОНТЕНТ -->
         <div class="content">
-            <!-- ШАПКА -->
             <header class="header">
                 <h1>EchoBlog.INC</h1>
                 <div class="header-right">
-                    <div class="visitor-counter">
-                        <span>👥 Онлайн:</span>
-                        <span class="count" id="visitorCount">1</span>
-                    </div>
+                    <button class="header-btn donate-btn" id="donateBtn">💙 Донаты</button>
+                    <button class="header-btn credits-btn" id="creditsBtn">👥 Титры</button>
                 </div>
             </header>
 
-            <!-- ВКЛАДКИ -->
             <div class="tabs">
                 <button class="tab-btn active" data-tab="blog">Блог</button>
                 <button class="tab-btn" data-tab="download">Скачать</button>
             </div>
 
-            <!-- ВКЛАДКА: БЛОГ -->
             <div class="tab-content active" id="tab-blog">
                 <div id="postsContainer">
                     <div class="posts-grid" id="postsGrid">
@@ -1035,7 +536,6 @@
                 </div>
             </div>
 
-            <!-- ВКЛАДКА: СКАЧАТЬ -->
             <div class="tab-content" id="tab-download">
                 <div class="download-page">
                     <h2>FunkyMogus</h2>
@@ -1043,24 +543,16 @@
                         Скачай мод FunkyMogus для Friday Night Funkin'!<br>
                         Нажми на кнопку ниже, чтобы выбрать платформу для скачивания.
                     </p>
-
-                    <img src="images/funkymogus.png" alt="FunkyMogus" class="funky-image" 
-                         onerror="this.style.display='none'">
-
+                    <img src="images/funkymogus.png" alt="FunkyMogus" class="funky-image"
+                         loading="lazy" onerror="this.style.display='none'">
                     <button class="funky-btn" id="funkyBtn">FunkyMogus</button>
-
                     <div class="sub-buttons" id="subButtons">
-                        <a href="https://gamebanana.com/mods/684716" target="_blank" class="sub-btn gamebanana">
-                            Gamebanana
-                        </a>
-                        <a href="https://gamejolt.com/games/funkymogus/960415" target="_blank" class="sub-btn gamejolt">
-                            Gamejolt
-                        </a>
+                        <a href="https://gamebanana.com/mods/684716" target="_blank" rel="noopener" class="sub-btn gamebanana">Gamebanana</a>
+                        <a href="https://gamejolt.com/games/funkymogus/960415" target="_blank" rel="noopener" class="sub-btn gamejolt">Gamejolt</a>
                     </div>
                 </div>
             </div>
 
-            <!-- ФУТЕР -->
             <footer class="footer">
                 <div class="official-badge">Официальный сайт</div>
                 <p class="official-text">
@@ -1073,14 +565,11 @@
                     <strong>не являются официальными</strong>. Пожалуйста, будьте внимательны
                     и доверяйте только этому источнику.
                 </p>
-                <div class="copyright">
-                    © <span>EchoTeam.INC</span> — Все права защищены
-                </div>
+                <div class="copyright">© <span>EchoTeam.INC</span> — Все права защищены</div>
             </footer>
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО -->
     <div class="modal-overlay" id="postModal">
         <div class="modal-content">
             <button class="modal-close" id="closeModal">✕</button>
@@ -1095,369 +584,407 @@
         </div>
     </div>
 
+    <div class="credits-overlay" id="creditsOverlay"></div>
+    <aside class="credits-panel" id="creditsPanel">
+        <div class="credits-panel-header">
+            <h2>Титры</h2>
+            <button class="credits-close" id="creditsClose">✕</button>
+        </div>
+        <div class="credits-panel-body" id="creditsBody">
+            <div class="credits-loading">Загрузка...</div>
+        </div>
+    </aside>
+
     <script>
-        // ============ ЕДИНЫЙ ЦИКЛ АНИМАЦИИ ============
-        let lastTime = performance.now();
+        // ===== ГЛОБАЛЬНЫЕ =====
+        let pageVisible = !document.hidden;
+        document.addEventListener('visibilitychange', () => { pageVisible = !document.hidden; });
 
-        const starsData = [];
-        const amongusData = [];
+        function randomBetween(min, max) { return Math.random() * (max - min) + min; }
 
-        function randomBetween(min, max) {
-            return Math.random() * (max - min) + min;
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[c]);
         }
 
-        // ============ ЗВЁЗДЫ (без рандомного размера — все одинаковые) ============
+        // ===== ЗВЁЗДЫ =====
         (function() {
-            const starsContainer = document.getElementById('stars');
-            const STAR_COUNT = 300;
-            const FIXED_SIZE = 1.5; // фиксированный размер всех звёзд
+            const canvas = document.getElementById('stars');
+            const ctx = canvas.getContext('2d', { alpha: true });
+            const STAR_COUNT = 250;
+            const FIXED_SIZE = 1.5;
+            let W = 0, H = 0, stars = [];
 
-            for (let i = 0; i < STAR_COUNT; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.width = FIXED_SIZE + 'px';
-                star.style.height = FIXED_SIZE + 'px';
-                const left = (i / STAR_COUNT) * 130 - 20;
-                star.style.left = left + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.opacity = 0.4 + Math.random() * 0.6;
-                starsContainer.appendChild(star);
-
-                starsData.push({
-                    el: star,
-                    speed: 1.5 + Math.random() * 3.5
-                });
+            function resize() {
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                W = window.innerWidth; H = window.innerHeight;
+                canvas.width = W * dpr; canvas.height = H * dpr;
+                canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             }
+
+            function initStars() {
+                stars = [];
+                for (let i = 0; i < STAR_COUNT; i++) {
+                    stars.push({
+                        x: Math.random() * W,
+                        y: Math.random() * H,
+                        speed: 40 + Math.random() * 100,
+                        opacity: 0.4 + Math.random() * 0.6
+                    });
+                }
+            }
+
+            function updateStars(dt) {
+                for (let i = 0; i < stars.length; i++) {
+                    const s = stars[i];
+                    s.x -= s.speed * dt;
+                    if (s.x < -5) {
+                        s.x = W + Math.random() * 30;
+                        s.y = Math.random() * H;
+                        s.opacity = 0.4 + Math.random() * 0.6;
+                        s.speed = 40 + Math.random() * 100;
+                    }
+                }
+            }
+
+            function drawStars() {
+                ctx.clearRect(0, 0, W, H);
+                for (let i = 0; i < stars.length; i++) {
+                    const s = stars[i];
+                    ctx.globalAlpha = s.opacity;
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(s.x, s.y, FIXED_SIZE, FIXED_SIZE);
+                }
+                ctx.globalAlpha = 1;
+            }
+
+            window.__stars = { updateStars, drawStars };
+            resize(); initStars();
+
+            let rt;
+            window.addEventListener('resize', () => {
+                clearTimeout(rt);
+                rt = setTimeout(() => { resize(); initStars(); }, 150);
+            });
         })();
 
-        // ============ АМОГУСЫ ============
-        (function() {
-            const AMONGUS_FILES = [
-                'red', 'tan', 'black', 'yellow',
-                'purple', 'maroon', 'white', 'blue', 'pink'
-            ];
+        // ===== АМОГУСЫ =====
+        const amongusData = [];
+        const AMONGUS_SPEED_MIN = 90;
+        const AMONGUS_SPEED_MAX = 160;
 
+        function resetAmongus(a, spawnRight) {
+            const W = window.innerWidth;
+            const H = window.innerHeight;
+            if (spawnRight) a.x = W + randomBetween(50, 300);
+            a.baseY = randomBetween(H * 0.08, H * 0.82);
+            a.speed = randomBetween(AMONGUS_SPEED_MIN, AMONGUS_SPEED_MAX);
+            a.floatAmp = randomBetween(6, 14);
+            a.floatFreq = randomBetween(1.2, 2.2);
+            a.floatPhase = randomBetween(0, Math.PI * 2);
+            a.rotAmp = randomBetween(6, 14);
+            a.rotPhase = randomBetween(0, Math.PI * 2);
+            a.rotFreq = randomBetween(1.2, 2.2);
+            a.baseRot = randomBetween(-6, 6);
+            a.respawnAt = 0;
+        }
+
+        (function() {
+            const FILES = ['red','tan','black','yellow','purple','maroon','white','blue','pink'];
             const layer = document.getElementById('amongusLayer');
             if (!layer) return;
 
-            const shuffled = AMONGUS_FILES.slice().sort(() => Math.random() - 0.5);
+            const W = window.innerWidth;
+            const H = window.innerHeight;
+            const shuffled = FILES.slice().sort(() => Math.random() - 0.5);
 
             shuffled.forEach((name, index) => {
                 const img = document.createElement('img');
                 img.className = 'amongus';
                 img.src = 'bg/' + name + '.png';
                 img.alt = name;
-                img.dataset.name = name;
-
-                const startLeft = (index / AMONGUS_FILES.length) * 90 + randomBetween(0, 8);
-                img.style.left = startLeft + '%';
-
-                const baseTop = randomBetween(8, 82);
-                img.style.top = baseTop + '%';
-
-                img.onerror = function() {
-                    this.style.display = 'none';
-                };
-
+                img.loading = 'lazy';
+                img.decoding = 'async';
+                img.onerror = function() { this.style.display = 'none'; };
                 layer.appendChild(img);
 
-                amongusData.push({
-                    el: img,
-                    left: startLeft,
-                    baseTop: baseTop,
-                    speed: randomBetween(2.5, 5.5),
-                    floatAmp: randomBetween(2.5, 5.5),
-                    floatFreq: randomBetween(0.9, 1.6),
-                    floatPhase: randomBetween(0, Math.PI * 2),
-                    rotAmp: randomBetween(4, 9),
-                    rotPhase: randomBetween(0, Math.PI * 2),
-                    rotFreq: randomBetween(1.0, 1.8),
-                    baseRot: randomBetween(-4, 4)
-                });
+                const a = { el: img, x: 0, baseY: 0, speed: 0,
+                    floatAmp: 0, floatFreq: 0, floatPhase: 0,
+                    rotAmp: 0, rotPhase: 0, rotFreq: 0, baseRot: 0, respawnAt: 0 };
+
+                resetAmongus(a, false);
+                a.x = (index / FILES.length) * W * 0.9 + randomBetween(0, W * 0.08);
+                a.baseY = randomBetween(H * 0.08, H * 0.82);
+                amongusData.push(a);
             });
         })();
 
-        // ============ ЕДИНЫЙ ЦИКЛ ============
+        // ===== ЕДИНЫЙ ЦИКЛ =====
+        let lastTime = performance.now();
+
         function tick(now) {
+            requestAnimationFrame(tick);
+            if (!pageVisible) { lastTime = now; return; }
+
             let dt = (now - lastTime) / 1000;
             if (dt > 0.1) dt = 0.1;
             lastTime = now;
 
-            // ===== ЗВЁЗДЫ =====
-            for (let i = 0; i < starsData.length; i++) {
-                const s = starsData[i];
-                const star = s.el;
-                let left = parseFloat(star.style.left);
-                left -= s.speed * dt;
+            window.__stars.updateStars(dt);
+            window.__stars.drawStars();
 
-                if (left < -20) {
-                    left = 100 + Math.random() * 30;
-                    star.style.top = Math.random() * 100 + '%';
-                    star.style.opacity = 0.4 + Math.random() * 0.6;
-                    s.speed = 1.5 + Math.random() * 3.5;
-                }
-                star.style.left = left + '%';
-            }
-
-            // ===== АМОГУСЫ =====
             const t = now / 1000;
+            const W = window.innerWidth;
+
             for (let i = 0; i < amongusData.length; i++) {
                 const a = amongusData[i];
                 const img = a.el;
                 if (img.style.display === 'none') continue;
 
-                a.left -= a.speed * dt;
+                if (a.respawnAt) {
+                    if (now < a.respawnAt) continue;
+                    resetAmongus(a, true);
+                    img.style.opacity = '1';
+                }
 
-                if (a.left < -15) {
-                    a.left = 105 + randomBetween(0, 15);
-                    a.baseTop = randomBetween(8, 82);
-                    a.speed = randomBetween(2.5, 5.5);
-                    a.floatAmp = randomBetween(2.5, 5.5);
-                    a.floatFreq = randomBetween(0.9, 1.6);
-                    a.floatPhase = randomBetween(0, Math.PI * 2);
-                    a.rotAmp = randomBetween(4, 9);
-                    a.rotPhase = randomBetween(0, Math.PI * 2);
-                    a.baseRot = randomBetween(-4, 4);
+                a.x -= a.speed * dt;
+
+                if (a.x < -150) {
+                    img.style.opacity = '0';
+                    a.respawnAt = now + randomBetween(1000, 5000);
+                    continue;
                 }
 
                 const offsetY = Math.sin(a.floatPhase + t * a.floatFreq) * a.floatAmp;
-                const top = a.baseTop + offsetY;
                 const rotate = a.baseRot + Math.sin(a.rotPhase + t * a.rotFreq) * a.rotAmp;
-
-                img.style.left = a.left + '%';
-                img.style.top = top + '%';
-                // scaleX(1) — картинка НЕ отражена (смотрит вправо, как оригинал)
-                img.style.transform = 'scaleX(1) rotate(' + rotate + 'deg)';
+                img.style.transform = 'translate3d(' + a.x + 'px,' +
+                    (a.baseY + offsetY) + 'px,0) rotate(' + rotate + 'deg)';
             }
-
-            requestAnimationFrame(tick);
         }
-
         requestAnimationFrame(tick);
 
-        // ============ СЧЁТЧИК ПОСЕТИТЕЛЕЙ ============
-        (function() {
-            let visitorId = localStorage.getItem('visitorId');
-            if (!visitorId) {
-                visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('visitorId', visitorId);
-            }
-
-            let count = parseInt(localStorage.getItem('visitorCount') || '0');
-            const today = new Date().toDateString();
-            const lastVisit = localStorage.getItem('lastVisitDate');
-
-            if (lastVisit !== today) {
-                count++;
-                localStorage.setItem('visitorCount', count.toString());
-                localStorage.setItem('lastVisitDate', today);
-            }
-
-            document.getElementById('visitorCount').textContent = count;
-
-            setInterval(() => {
-                const currentCount = parseInt(localStorage.getItem('visitorCount') || '0');
-                document.getElementById('visitorCount').textContent = currentCount;
-            }, 10000);
-        })();
-
-        // ============ ВКЛАДКИ ============
+        // ===== ВКЛАДКИ =====
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-
-                const tabId = this.dataset.tab;
-                document.getElementById('tab-' + tabId).classList.add('active');
+                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
             });
         });
 
-        // ============ КНОПКА FUNKYMOGUS ============
+        // ===== FUNKYMOGUS =====
         document.getElementById('funkyBtn').addEventListener('click', function() {
-            const subButtons = document.getElementById('subButtons');
-            subButtons.classList.toggle('open');
-
-            if (subButtons.classList.contains('open')) {
-                this.textContent = 'Скрыть варианты';
-            } else {
-                this.textContent = 'FunkyMogus';
-            }
+            const sub = document.getElementById('subButtons');
+            sub.classList.toggle('open');
+            this.textContent = sub.classList.contains('open') ? 'Скрыть варианты' : 'FunkyMogus';
         });
 
-        // ============ ПОСТЫ ============
+        // ===== ДОНАТЫ =====
+        document.getElementById('donateBtn').addEventListener('click', () => {
+            showTempMessage('⛔ Недоступно', 5000);
+        });
+
+        function showTempMessage(text, duration = 5000) {
+            const old = document.getElementById('tempMessage');
+            if (old) old.remove();
+            const msg = document.createElement('div');
+            msg.id = 'tempMessage';
+            msg.className = 'temp-message';
+            msg.textContent = text;
+            document.body.appendChild(msg);
+            void msg.offsetWidth;
+            msg.classList.add('show');
+            setTimeout(() => {
+                msg.classList.remove('show');
+                setTimeout(() => msg.remove(), 400);
+            }, duration);
+        }
+
+        // ===== ТИТРЫ =====
+        const creditsPanel = document.getElementById('creditsPanel');
+        const creditsOverlay = document.getElementById('creditsOverlay');
+        let creditsLoaded = false;
+
+        function openCredits() {
+            creditsPanel.classList.add('open');
+            creditsOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            if (!creditsLoaded) loadCredits();
+        }
+        function closeCredits() {
+            creditsPanel.classList.remove('open');
+            creditsOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('creditsBtn').addEventListener('click', openCredits);
+        document.getElementById('creditsClose').addEventListener('click', closeCredits);
+        creditsOverlay.addEventListener('click', closeCredits);
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && creditsPanel.classList.contains('open')) closeCredits();
+        });
+
+        async function loadCredits() {
+            const body = document.getElementById('creditsBody');
+            body.innerHTML = '<div class="credits-loading">Загрузка...</div>';
+            try {
+                const r = await fetch('./credits.json?' + Date.now());
+                if (!r.ok) throw new Error();
+                const data = await r.json();
+                let html = '';
+                (data.sections || []).forEach(section => {
+                    html += '<div class="credits-section"><div class="credits-section-title">' +
+                        escapeHtml(section.title || 'Без названия') + '</div>';
+                    (section.members || []).forEach(p => {
+                        const name = escapeHtml(p.name || '');
+                        const role = escapeHtml(p.role || '');
+                        const avatar = p.avatar
+                            ? '<img class="credits-avatar" src="' + escapeHtml(p.avatar) +
+                              '" alt="' + name + '" loading="lazy" ' +
+                              'onerror="this.outerHTML=\'<div class=&quot;credits-avatar-placeholder&quot;>👤</div>\'">'
+                            : '<div class="credits-avatar-placeholder">👤</div>';
+                        html += '<div class="credits-person">' + avatar +
+                            '<div class="credits-info">' +
+                                '<div class="credits-name">' + name + '</div>' +
+                                '<div class="credits-role">' + role + '</div>' +
+                                (p.link ? '<a class="credits-link" href="' + escapeHtml(p.link) +
+                                    '" target="_blank" rel="noopener">' +
+                                    escapeHtml(p.linkText || p.link) + '</a>' : '') +
+                            '</div></div>';
+                    });
+                    html += '</div>';
+                });
+                body.innerHTML = html || '<div class="credits-loading">Список пуст</div>';
+                creditsLoaded = true;
+            } catch {
+                body.innerHTML = '<div class="credits-loading">⚠️ Не удалось загрузить credits.json</div>';
+            }
+        }
+
+        // ===== ПОСТЫ =====
         let posts = [];
 
-        function parseContent(content, isModal = false) {
-            if (!content) return 'Нет содержимого';
+        function getImagePath(name) {
+            const ext = name.split('.').pop().toLowerCase();
+            const valid = ['jpg','jpeg','png','gif','webp','svg','bmp','ico'];
+            return valid.includes(ext) ? 'images/' + name : 'images/' + name + '.jpg';
+        }
+        function getPlainText(c) { return c ? c.replace(/!image:\([^)]+\)/g, '').trim() : ''; }
+        function getFirstImage(c) {
+            if (!c) return null;
+            const m = c.match(/!image:\(([^)]+)\)/);
+            return m ? getImagePath(m[1].trim()) : null;
+        }
 
+        function parseContent(content, isModal) {
+            if (!content) return 'Нет содержимого';
             const parts = content.split(/!image:\(([^)]+)\)/);
             let result = '';
-
             for (let i = 0; i < parts.length; i++) {
                 if (i % 2 === 0) {
-                    const text = parts[i].trim();
-                    if (text) {
-                        result += '<span>' + text + '</span>';
-                    }
+                    const txt = parts[i].trim();
+                    if (txt) result += '<span>' + escapeHtml(txt) + '</span>';
                 } else {
-                    const imageName = parts[i].trim();
-                    if (imageName) {
-                        const ext = imageName.split('.').pop().toLowerCase();
-                        const validExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
-                        const imagePath = validExts.includes(ext) ?
-                            'images/' + imageName :
-                            'images/' + imageName + '.jpg';
-
+                    const name = parts[i].trim();
+                    if (name) {
+                        const p = getImagePath(name);
                         if (isModal) {
-                            result += '<div class="modal-image-wrapper">' +
-                                '<img src="' + imagePath + '" alt="' + imageName + '" ' +
-                                'onerror="this.parentElement.innerHTML=\'<span style=&quot;color:#ff6b6b;&quot;>⚠️ Картинка не найдена: ' + imageName + '</span>\'">' +
-                                '</div>';
+                            result += '<div class="modal-image-wrapper"><img src="' + escapeHtml(p) +
+                                '" alt="' + escapeHtml(name) + '" loading="lazy"></div>';
                         } else {
-                            result += '<div style="margin: 10px 0;">' +
-                                '<img src="' + imagePath + '" alt="' + imageName + '" ' +
-                                'style="width:100%; max-height:300px; object-fit:cover; border-radius:12px;" ' +
-                                'onerror="this.style.display=\'none\'">' +
-                                '</div>';
+                            result += '<div style="margin:10px 0;"><img src="' + escapeHtml(p) +
+                                '" alt="' + escapeHtml(name) +
+                                '" style="width:100%;max-height:300px;object-fit:cover;border-radius:12px;" loading="lazy"></div>';
                         }
                     }
                 }
             }
-
             return result;
-        }
-
-        function getPlainText(content) {
-            if (!content) return '';
-            return content.replace(/!image:\([^)]+\)/g, '').trim();
-        }
-
-        function getFirstImage(content) {
-            if (!content) return null;
-            const match = content.match(/!image:\(([^)]+)\)/);
-            if (match) {
-                const imageName = match[1].trim();
-                const ext = imageName.split('.').pop().toLowerCase();
-                const validExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
-                return validExts.includes(ext) ? 'images/' + imageName : 'images/' + imageName + '.jpg';
-            }
-            return null;
         }
 
         async function loadPosts() {
             try {
-                const response = await fetch('./posts.json?' + Date.now());
-                if (!response.ok) throw new Error('Файл не найден');
-                const data = await response.json();
-                posts = data;
-                renderPosts();
-                setTimeout(initCardEffects, 100);
-                return true;
-            } catch (error) {
-                posts = [];
-                renderPosts();
-                return false;
-            }
+                const r = await fetch('./posts.json?' + Date.now());
+                if (!r.ok) throw new Error();
+                posts = await r.json();
+            } catch { posts = []; }
+            renderPosts();
         }
 
         function renderPosts() {
             const grid = document.getElementById('postsGrid');
             if (!grid) return;
-
             if (!posts || posts.length === 0) {
-                grid.innerHTML =
-                    '<div class="empty-posts">' +
-                        '<div class="empty-icon">📭</div>' +
-                        '<div class="empty-title">Извините, но постов пока нет</div>' +
-                        '<div class="empty-desc">Скоро здесь появятся новые записи. Загляните позже!</div>' +
-                    '</div>';
+                grid.innerHTML = '<div class="empty-posts">' +
+                    '<div class="empty-icon">📭</div>' +
+                    '<div class="empty-title">Извините, но постов пока нет</div>' +
+                    '<div class="empty-desc">Скоро здесь появятся новые записи. Загляните позже!</div></div>';
                 return;
             }
-
             grid.innerHTML = posts.map(post => {
-                const firstImage = getFirstImage(post.content);
-                const plainText = getPlainText(post.content);
-                const previewText = plainText.substring(0, 150) + (plainText.length > 150 ? '...' : '');
-
+                const img = getFirstImage(post.content);
+                const plain = getPlainText(post.content);
+                const preview = plain.substring(0, 150) + (plain.length > 150 ? '...' : '');
                 const isAuthor = !!post.isAuthor;
                 const badge = isAuthor
                     ? '<span class="author-badge">AUTHOR</span>'
                     : (post.isDev ? '<span class="dev-badge">DEV</span>' : '');
-
-                return '<div class="post-card ' + (isAuthor ? 'author-post' : '') + '" onclick="openPost(' + post.id + ')">' +
+                return '<div class="post-card ' + (isAuthor ? 'author-post' : '') + '" data-id="' + post.id + '">' +
                     '<div class="post-meta">' +
-                        '<span class="post-author">' + (post.author || 'Аноним') + badge + '</span>' +
-                        '<span class="post-date">' + (post.date || 'Дата не указана') + '</span>' +
+                        '<span class="post-author">' + escapeHtml(post.author || 'Аноним') + badge + '</span>' +
+                        '<span class="post-date">' + escapeHtml(post.date || 'Дата не указана') + '</span>' +
                     '</div>' +
-                    (firstImage
-                        ? '<div class="post-image-wrapper"><img src="' + firstImage + '" alt="' + post.title + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'"></div>'
+                    (img
+                        ? '<div class="post-image-wrapper"><img src="' + escapeHtml(img) +
+                          '" alt="' + escapeHtml(post.title || '') +
+                          '" loading="lazy" decoding="async" onerror="this.parentElement.style.display=\'none\'"></div>'
                         : '<div class="post-image-placeholder">' + (isAuthor ? '⭐' : '🌠') + '</div>') +
-                    '<h3>' + (post.title || 'Без заголовка') + '</h3>' +
-                    '<div class="post-content-preview">' + (previewText || 'Нет содержимого') + '</div>' +
-                    '<div class="read-more">Читать полностью →</div>' +
-                '</div>';
+                    '<h3>' + escapeHtml(post.title || 'Без заголовка') + '</h3>' +
+                    '<div class="post-content-preview">' + escapeHtml(preview || 'Нет содержимого') + '</div>' +
+                    '<div class="read-more">Читать полностью →</div></div>';
             }).join('');
         }
 
-        function initCardEffects() {
-            const cards = document.querySelectorAll('.post-card');
+        document.getElementById('postsGrid').addEventListener('click', function(e) {
+            const card = e.target.closest('.post-card');
+            if (!card) return;
+            const rect = card.getBoundingClientRect();
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple';
+            ripple.style.left = (e.clientX - rect.left) + 'px';
+            ripple.style.top = (e.clientY - rect.top) + 'px';
+            ripple.style.width = '20px';
+            ripple.style.height = '20px';
+            card.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 700);
+            openPost(parseInt(card.dataset.id, 10));
+        });
 
-            cards.forEach(card => {
-                card.removeEventListener('click', card._rippleHandler);
-                card.removeEventListener('mousemove', card._moveHandler);
-
-                const rippleHandler = function(e) {
-                    const rect = this.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-
-                    const ripple = document.createElement('span');
-                    ripple.className = 'ripple';
-                    ripple.style.left = x + 'px';
-                    ripple.style.top = y + 'px';
-                    ripple.style.width = '20px';
-                    ripple.style.height = '20px';
-                    this.appendChild(ripple);
-
-                    setTimeout(() => { ripple.remove(); }, 800);
-                };
-
-                card.addEventListener('click', rippleHandler);
-                card._rippleHandler = rippleHandler;
-
-                const moveHandler = function(e) {
-                    const rect = this.getBoundingClientRect();
-                    const x = ((e.clientX - rect.left) / rect.width) * 100;
-                    const y = ((e.clientY - rect.top) / rect.height) * 100;
-                    this.style.setProperty('--x', x + '%');
-                    this.style.setProperty('--y', y + '%');
-                };
-
-                card.addEventListener('mousemove', moveHandler);
-                card._moveHandler = moveHandler;
-            });
-        }
+        document.getElementById('postsGrid').addEventListener('mousemove', function(e) {
+            const card = e.target.closest('.post-card');
+            if (!card) return;
+            const rect = card.getBoundingClientRect();
+            card.style.setProperty('--x', ((e.clientX - rect.left) / rect.width * 100) + '%');
+            card.style.setProperty('--y', ((e.clientY - rect.top) / rect.height * 100) + '%');
+        });
 
         function openPost(id) {
             const post = posts.find(p => p.id === id);
             if (!post) return;
-
-            const modal = document.getElementById('postModal');
             const isAuthor = !!post.isAuthor;
             const badge = isAuthor
                 ? '<span class="author-badge">AUTHOR</span>'
                 : (post.isDev ? '<span class="dev-badge">DEV</span>' : '');
-
-            document.getElementById('modalAuthor').innerHTML = (post.author || 'Аноним') + badge;
+            document.getElementById('modalAuthor').innerHTML =
+                escapeHtml(post.author || 'Аноним') + badge;
             document.getElementById('modalDate').textContent = post.date || 'Дата не указана';
             document.getElementById('modalTitle').textContent = post.title || 'Без заголовка';
-
-            const parsedContent = parseContent(post.content || 'Нет содержимого', true);
-            document.getElementById('modalContent').innerHTML = parsedContent;
-
-            modal.classList.add('active');
+            document.getElementById('modalContent').innerHTML =
+                parseContent(post.content || 'Нет содержимого', true);
+            document.getElementById('postModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
@@ -1467,28 +994,13 @@
         }
 
         document.getElementById('postModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
+            if (e.target === this) closeModal();
         });
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
         document.getElementById('closeModal').addEventListener('click', closeModal);
 
-        async function init() {
-            await loadPosts();
-            initCardEffects();
-            setInterval(async () => {
-                await loadPosts();
-            }, 30000);
-        }
-
-        init();
+        // ===== СТАРТ =====
+        loadPosts();
     </script>
 </body>
 </html>
