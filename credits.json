@@ -21,7 +21,81 @@
           "avatar": "images/credits/vilka.png",
           "link": "https://www.youtube.com/@vilka1ka",
           "linkText": "@YouTube"
+        } 
+      ]
+    },
+    {
+      "title": "Команда",
+      "members": [
+        {
+          "name": "Mick",
+          "role": "Композитор",
+          "avatar": "images/credits/Mick.png",
+          "link": "https://www.youtube.com/@newwimickeymouse5",
+          "linkText": "@YouTube"
         }
+      ]
+    },
+    {
+      "title": "Команда",
+      "members": [
+        {
+          "name": "NiceGames",
+          "role": "Композитор",
+          "avatar": "images/credits/vlad.png",
+          "link": "https://www.youtube.com/@nice-games2007",
+          "linkText": "@YouTube"
+        }
+      ]
+    },
+    {
+      "title": "Команда",
+      "members": [
+        {
+          "name": "L1ghtlyvun",
+          "role": "Кодер",
+          "avatar": "images/credits/l1ghtlyvun.png",
+          "link": "https://www.youtube.com/channel/UCwggkn9448JjS52rkLiXt0Q",
+          "linkText": "@YouTube"
+        }
+      ]
+    },
+    {
+      "title": "Команда",
+      "members": [
+        {
+          "name": "Tazik",
+          "role": "Чартер",
+          "avatar": "images/credits/Tazik.png",
+          "link": "",
+          "linkText": ""
+        }
+      ]
+    },
+    {
+      "title": "Команда",
+      "members": [
+        {
+          "name": "Ordenchik",
+          "role": "Художник",
+          "avatar": "images/credits/Ordi.png",
+          "link": "",
+          "linkText": ""
+        }
+      ]
+    },
+    {
+      "title": "Команда",
+      "members": [
+        {
+          "name": "Karma",
+          "role": "Сценарист",
+          "avatar": "images/credits/Karma.png",
+          "link": "",
+          "linkText": ""
+        }
+      ]
+    },
       ]
     }
   ]
