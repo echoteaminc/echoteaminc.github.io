@@ -212,7 +212,6 @@
             gap: 22px;
         }
 
-        /* ===== БОЛЬШАЯ ПАНЕЛЬ АВТОРА ===== */
         .credits-author-panel {
             position: relative;
             display: flex;
@@ -279,7 +278,6 @@
             top: 10%; bottom: 10%;
         }
 
-        /* ===== АВАТАР ===== */
         .credits-author-avatar-wrapper {
             position: relative;
             flex-shrink: 0;
@@ -323,6 +321,7 @@
         }
         .credits-author-avatar {
             object-fit: cover;
+            object-position: center;
             background: rgba(0,0,0,0.3);
             display: block;
         }
@@ -334,7 +333,6 @@
             font-size: 48px;
         }
 
-        /* ===== ИНФО ===== */
         .credits-author-info {
             flex: 1;
             min-width: 0;
@@ -425,7 +423,6 @@
             color: rgba(79,195,255,0.5);
         }
 
-        /* ===== ЗАГРУЗКА / ПУСТО ===== */
         .credits-loading {
             text-align: center;
             padding: 80px 20px;
@@ -926,10 +923,6 @@
             box-shadow: 0 30px 80px rgba(0,0,0,0.9);
             position: relative;
         }
-        .modal-content::-webkit-scrollbar { width: 4px; }
-        .modal-content::-webkit-scrollbar-thumb {
-            background: rgba(79,195,255,0.3); border-radius: 4px;
-        }
         .modal-close {
             position: sticky; top: 0; float: right;
             background: rgba(255,255,255,0.05);
@@ -1001,13 +994,95 @@
         }
         .footer .copyright span { color: #4fc3ff; }
 
-        /* ===== СКРОЛЛБАР ===== */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(79,195,255,0.25); border-radius: 4px;
+        /* ===== КРАСИВЫЙ СКРОЛЛБАР ===== */
+        ::-webkit-scrollbar {
+            width: 14px;
+            height: 14px;
         }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(79,195,255,0.45); }
+
+        ::-webkit-scrollbar-track {
+            background:
+                linear-gradient(180deg,
+                    rgba(0,20,60,0.4) 0%,
+                    rgba(0,10,35,0.6) 50%,
+                    rgba(0,20,60,0.4) 100%);
+            border-left: 1px solid rgba(79,195,255,0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background:
+                linear-gradient(180deg,
+                    #4fc3ff 0%,
+                    #0080ff 50%,
+                    #0066ff 100%);
+            border-radius: 10px;
+            border: 3px solid rgba(0,15,45,0.9);
+            background-clip: padding-box;
+            box-shadow:
+                0 0 12px rgba(79,195,255,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            transition: background .3s ease, box-shadow .3s ease;
+            min-height: 40px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background:
+                linear-gradient(180deg,
+                    #6fd0ff 0%,
+                    #0090ff 50%,
+                    #0075ff 100%);
+            box-shadow:
+                0 0 20px rgba(79,195,255,0.8),
+                0 0 30px rgba(79,195,255,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.4);
+        }
+
+        ::-webkit-scrollbar-thumb:active {
+            background:
+                linear-gradient(180deg,
+                    #8fd8ff 0%,
+                    #00a0ff 50%,
+                    #0085ff 100%);
+            box-shadow:
+                0 0 25px rgba(79,195,255,1),
+                0 0 40px rgba(79,195,255,0.6);
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: rgba(0,15,45,0.9);
+        }
+
+        ::-webkit-scrollbar-button {
+            display: none;
+            height: 0;
+            width: 0;
+        }
+
+        /* Скроллбар для модалки постов */
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .modal-content::-webkit-scrollbar-track {
+            background: rgba(0,15,45,0.5);
+            border-radius: 4px;
+        }
+        .modal-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #4fc3ff, #0066ff);
+            border-radius: 4px;
+            border: 2px solid rgba(0,15,45,0.9);
+            background-clip: padding-box;
+            box-shadow: 0 0 10px rgba(79,195,255,0.5);
+        }
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #6fd0ff, #0080ff);
+            box-shadow: 0 0 15px rgba(79,195,255,0.8);
+        }
+
+        /* Firefox */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #4fc3ff rgba(0,15,45,0.6);
+        }
 
         /* ===== АДАПТИВ ===== */
         @media (max-width: 768px) {
@@ -1043,7 +1118,6 @@
             .sub-buttons { flex-direction: column; align-items: stretch; }
             .dl-panel.open { max-height: 600px; }
 
-            /* Credits адаптив */
             .credits-page { padding: 10px; }
             .credits-author-panel {
                 flex-direction: column;
@@ -1064,6 +1138,13 @@
 
             .donate-grid { grid-template-columns: 1fr; }
             .donate-card { padding: 28px 22px; }
+
+            /* Скроллбар тоньше на мобилке */
+            ::-webkit-scrollbar { width: 8px; height: 8px; }
+            ::-webkit-scrollbar-thumb {
+                border-width: 2px;
+                border-radius: 6px;
+            }
         }
         @media (prefers-reduced-motion: reduce) {
             .amongus { display: none; }
