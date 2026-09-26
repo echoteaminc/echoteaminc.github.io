@@ -1,13 +1,25 @@
 {
   "sections": [
     {
-      "title": "Основатели",
+      "title": "Основатель",
       "members": [
         {
           "name": "Boofy",
           "role": "Основатель / Разработчик",
           "avatar": "images/credits/boofy.png",
           "link": "https://www.youtube.com/@Boofy09_Official",
+          "linkText": "@YouTube"
+        }
+      ]
+    },
+    {
+      "title": "Команда",
+      "members": [
+        {
+          "name": "Vilka",
+          "role": "Сценарист / Кодер",
+          "avatar": "images/credits/example.png",
+          "link": "https://www.youtube.com/@vilka1ka",
           "linkText": "@YouTube"
         }
       ]
