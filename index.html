@@ -36,7 +36,9 @@
             will-change: transform; image-rendering: pixelated;
             transform: translate3d(0,0,0);
             transition: opacity 0.4s ease;
+            z-index: 1;
         }
+        .amongus.behind { z-index: 0; }
 
         /* ===== ГРАДИЕНТ ===== */
         .gradient {
@@ -197,70 +199,270 @@
             margin-bottom: 16px;
         }
 
-        /* ===== ТИТРЫ ===== */
+        /* ===== ТИТРЫ (БОЛЬШИЕ ПАНЕЛИ АВТОРОВ) ===== */
         .credits-page {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 20px;
         }
-        .credits-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+
+        .credits-list {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
         }
-        .credits-section {
-            background: rgba(0,20,60,0.45);
-            border: 1px solid rgba(100,200,255,0.12);
+
+        /* ===== БОЛЬШАЯ ПАНЕЛЬ АВТОРА ===== */
+        .credits-author-panel {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            padding: 32px 36px;
+            background:
+                radial-gradient(circle at 0% 0%, rgba(79,195,255,0.12), transparent 55%),
+                radial-gradient(circle at 100% 100%, rgba(0,100,255,0.1), transparent 55%),
+                linear-gradient(135deg, rgba(0,30,80,0.7), rgba(0,10,40,0.7));
+            border: 1px solid rgba(100,200,255,0.2);
+            border-radius: 26px;
+            overflow: hidden;
+            transition: transform .4s cubic-bezier(.22,1,.36,1),
+                        border-color .4s, box-shadow .4s, background .4s;
+            animation: authorPanelIn .6s cubic-bezier(.22,1,.36,1) both;
+        }
+        .credits-author-panel:nth-child(1) { animation-delay: 0.05s; }
+        .credits-author-panel:nth-child(2) { animation-delay: 0.15s; }
+        .credits-author-panel:nth-child(3) { animation-delay: 0.25s; }
+        .credits-author-panel:nth-child(4) { animation-delay: 0.35s; }
+        @keyframes authorPanelIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .credits-author-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -100%;
+            width: 60%; height: 200%;
+            background: linear-gradient(90deg,
+                transparent, rgba(79,195,255,0.14), transparent);
+            transform: skewX(-20deg);
+            transition: left 1s ease;
+            pointer-events: none;
+        }
+        .credits-author-panel:hover::before { left: 200%; }
+
+        .credits-author-panel:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: rgba(79,195,255,0.5);
+            background:
+                radial-gradient(circle at 0% 0%, rgba(79,195,255,0.2), transparent 55%),
+                radial-gradient(circle at 100% 100%, rgba(0,150,255,0.15), transparent 55%),
+                linear-gradient(135deg, rgba(0,50,120,0.75), rgba(0,20,70,0.75));
+            box-shadow:
+                0 25px 70px rgba(0,100,255,0.35),
+                0 0 60px rgba(79,195,255,0.2);
+        }
+
+        .credits-author-panel::after {
+            content: '';
+            position: absolute;
+            left: 0; top: 20%; bottom: 20%;
+            width: 4px;
+            background: linear-gradient(180deg, transparent, #4fc3ff, transparent);
+            border-radius: 0 4px 4px 0;
+            opacity: 0.7;
+            transition: opacity .4s ease, top .4s ease, bottom .4s ease;
+        }
+        .credits-author-panel:hover::after {
+            opacity: 1;
+            top: 10%; bottom: 10%;
+        }
+
+        /* ===== АВАТАР ===== */
+        .credits-author-avatar-wrapper {
+            position: relative;
+            flex-shrink: 0;
+        }
+        .credits-author-avatar-ring {
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 0deg,
+                #4fc3ff, #0066ff, transparent,
+                #0066ff, #4fc3ff
+            );
+            opacity: 0.6;
+            animation: authorRingRotate 8s linear infinite;
+            transition: opacity .4s ease;
+        }
+        .credits-author-panel:hover .credits-author-avatar-ring {
+            opacity: 1;
+            animation-duration: 3s;
+        }
+        @keyframes authorRingRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .credits-author-avatar,
+        .credits-author-avatar-placeholder {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid #0a1a3a;
+            z-index: 1;
+            box-shadow: 0 8px 30px rgba(0,100,255,0.3);
+            transition: transform .4s cubic-bezier(.22,1,.36,1);
+        }
+        .credits-author-panel:hover .credits-author-avatar,
+        .credits-author-panel:hover .credits-author-avatar-placeholder {
+            transform: scale(1.06);
+        }
+        .credits-author-avatar {
+            object-fit: cover;
+            background: rgba(0,0,0,0.3);
+            display: block;
+        }
+        .credits-author-avatar-placeholder {
+            background: linear-gradient(135deg, rgba(0,80,255,0.4), rgba(0,40,180,0.25));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        /* ===== ИНФО ===== */
+        .credits-author-info {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+            z-index: 1;
+        }
+        .credits-author-role-badge {
+            display: inline-block;
+            padding: 5px 16px;
+            background: linear-gradient(135deg, rgba(79,195,255,0.18), rgba(0,100,255,0.12));
+            border: 1px solid rgba(79,195,255,0.35);
             border-radius: 20px;
-            padding: 24px 22px;
-            animation: fadeIn .5s ease both;
+            color: #4fc3ff;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
         }
-        .credits-section:nth-child(1) { animation-delay: 0.05s; }
-        .credits-section:nth-child(2) { animation-delay: 0.12s; }
-        .credits-section:nth-child(3) { animation-delay: 0.19s; }
-        .credits-section:nth-child(4) { animation-delay: 0.26s; }
-        .credits-section-title {
-            font-size: 12px; font-weight: 800; letter-spacing: 1.5px;
-            text-transform: uppercase; color: #4fc3ff;
-            margin-bottom: 16px; opacity: 0.9;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(79,195,255,0.15);
+        .credits-author-name {
+            font-size: 34px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 8px;
+            letter-spacing: -0.8px;
+            line-height: 1.1;
+            transition: color .35s ease;
         }
-        .credits-person {
-            display: flex; align-items: center; gap: 14px;
-            padding: 12px 14px; background: rgba(0,20,60,0.4);
-            border: 1px solid rgba(100,200,255,0.1);
-            border-radius: 14px; margin-bottom: 10px;
-            transition: border-color .25s, background .25s, transform .25s;
+        .credits-author-panel:hover .credits-author-name {
+            background: linear-gradient(135deg, #4fc3ff, #0066ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .credits-person:last-child { margin-bottom: 0; }
-        .credits-person:hover {
-            border-color: rgba(100,200,255,0.35);
-            background: rgba(0,40,100,0.4); transform: translateX(4px);
+        .credits-author-desc {
+            font-size: 15px;
+            color: #90caf9;
+            opacity: 0.85;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            max-width: 600px;
         }
-        .credits-avatar, .credits-avatar-placeholder {
-            width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
-            border: 2px solid rgba(79,195,255,0.4);
+
+        .credits-author-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, rgba(0,120,255,0.35), rgba(0,70,200,0.25));
+            border: 1px solid rgba(79,195,255,0.4);
+            border-radius: 14px;
+            color: #4fc3ff;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 0.3px;
+            transition: background .3s, border-color .3s, color .3s,
+                        transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s;
         }
-        .credits-avatar { object-fit: cover; background: rgba(0,0,0,0.3); }
-        .credits-avatar-placeholder {
-            background: linear-gradient(135deg, rgba(0,80,255,0.3), rgba(0,40,180,0.15));
-            display: flex; align-items: center; justify-content: center; font-size: 20px;
+        .credits-author-link::before {
+            content: '🔗';
+            font-size: 14px;
+            transition: transform .3s ease;
         }
-        .credits-info { min-width: 0; }
-        .credits-name {
-            font-size: 15px; font-weight: 700; color: #fff;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        .credits-author-link:hover {
+            background: linear-gradient(135deg, rgba(0,150,255,0.55), rgba(0,100,255,0.4));
+            border-color: #4fc3ff;
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(79,195,255,0.4);
         }
-        .credits-role { font-size: 12px; color: #90caf9; opacity: 0.8; margin-top: 2px; }
-        .credits-link {
-            font-size: 11px; color: #4fc3ff; text-decoration: none;
-            opacity: 0.7; display: inline-block; margin-top: 3px;
+        .credits-author-link:hover::before {
+            transform: scale(1.2) rotate(-10deg);
         }
-        .credits-link:hover { opacity: 1; text-decoration: underline; }
+
+        .credits-author-deco {
+            position: absolute;
+            top: 20px; right: 24px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: rgba(79,195,255,0.25);
+            text-transform: uppercase;
+            z-index: 1;
+            pointer-events: none;
+            transition: color .35s ease;
+        }
+        .credits-author-panel:hover .credits-author-deco {
+            color: rgba(79,195,255,0.5);
+        }
+
+        /* ===== ЗАГРУЗКА / ПУСТО ===== */
         .credits-loading {
-            text-align: center; padding: 60px 20px;
-            color: #4fc3ff; font-size: 14px;
+            text-align: center;
+            padding: 80px 20px;
+            color: #4fc3ff;
+            font-size: 15px;
+        }
+        .credits-loading .spinner {
+            display: inline-block;
+            width: 40px; height: 40px;
+            border: 3px solid rgba(79,195,255,0.2);
+            border-top-color: #4fc3ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .credits-empty {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .credits-empty .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.4;
+            display: block;
+        }
+        .credits-empty .empty-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .credits-empty .empty-desc {
+            font-size: 14px;
+            color: #90caf9;
+            opacity: 0.7;
         }
 
         /* ===== ДОНАТЫ ===== */
@@ -378,7 +580,6 @@
             margin: 0 auto;
         }
 
-        /* ===== ГЕРОЙ-БЛОК ===== */
         .dl-hero {
             position: relative;
             border-radius: 28px;
@@ -466,7 +667,6 @@
             box-shadow: 0 25px 70px rgba(255,145,0,0.4);
         }
 
-        /* ===== ГЛАВНАЯ КНОПКА ===== */
         .funky-btn {
             display: inline-flex;
             align-items: center;
@@ -511,7 +711,6 @@
         .funky-btn:hover .funky-arrow { transform: translateY(4px); }
         .funky-btn.open .funky-arrow { transform: rotate(180deg); }
 
-        /* ===== ПАНЕЛЬ ЗАГРУЗКИ ===== */
         .dl-panel {
             max-height: 0;
             overflow: hidden;
@@ -610,58 +809,6 @@
             color: #fff;
             border-color: #00d4ff;
             box-shadow: 0 15px 45px rgba(0,212,255,0.5);
-        }
-
-        /* ===== ИНФО-ПЛАШКИ ===== */
-        .dl-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 18px;
-            margin-top: 10px;
-        }
-        .dl-info-card {
-            padding: 22px 20px;
-            background: rgba(0,20,60,0.45);
-            border: 1px solid rgba(100,200,255,0.12);
-            border-radius: 18px;
-            text-align: center;
-            transition: transform .35s cubic-bezier(.22,1,.36,1),
-                        border-color .3s, background .3s, box-shadow .3s;
-            animation: dlCardIn .5s cubic-bezier(.22,1,.36,1) both;
-        }
-        .dl-info-card:nth-child(1) { animation-delay: 0.05s; }
-        .dl-info-card:nth-child(2) { animation-delay: 0.12s; }
-        .dl-info-card:nth-child(3) { animation-delay: 0.19s; }
-        @keyframes dlCardIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .dl-info-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255,145,0,0.35);
-            background: rgba(40,25,0,0.4);
-            box-shadow: 0 12px 35px rgba(255,145,0,0.15);
-        }
-        .dl-info-card .dl-info-icon {
-            font-size: 30px;
-            margin-bottom: 10px;
-            display: block;
-            transition: transform .35s ease;
-        }
-        .dl-info-card:hover .dl-info-icon { transform: scale(1.15) rotate(6deg); }
-        .dl-info-card .dl-info-label {
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: #90caf9;
-            opacity: 0.7;
-            margin-bottom: 6px;
-        }
-        .dl-info-card .dl-info-value {
-            font-size: 15px;
-            font-weight: 700;
-            color: #fff;
         }
 
         /* ===== ПОСТЫ ===== */
@@ -896,13 +1043,32 @@
             .sub-buttons { flex-direction: column; align-items: stretch; }
             .dl-panel.open { max-height: 600px; }
 
-            .credits-grid { grid-template-columns: 1fr; }
+            /* Credits адаптив */
+            .credits-page { padding: 10px; }
+            .credits-author-panel {
+                flex-direction: column;
+                text-align: center;
+                padding: 28px 22px;
+                gap: 20px;
+            }
+            .credits-author-avatar,
+            .credits-author-avatar-placeholder {
+                width: 90px;
+                height: 90px;
+            }
+            .credits-author-avatar-placeholder { font-size: 40px; }
+            .credits-author-name { font-size: 26px; }
+            .credits-author-desc { font-size: 14px; }
+            .credits-author-link { width: 100%; justify-content: center; }
+            .credits-author-deco { top: 12px; right: 14px; font-size: 10px; }
+
             .donate-grid { grid-template-columns: 1fr; }
             .donate-card { padding: 28px 22px; }
         }
         @media (prefers-reduced-motion: reduce) {
             .amongus { display: none; }
             .header::before { display: none; }
+            .credits-author-avatar-ring { animation: none; }
         }
     </style>
 </head>
@@ -1006,8 +1172,11 @@
                     <p>Люди, благодаря которым EchoBlog.INC существует и развивается</p>
                 </div>
                 <div class="credits-page">
-                    <div class="credits-grid" id="creditsBody">
-                        <div class="credits-loading">Загрузка...</div>
+                    <div id="creditsBody">
+                        <div class="credits-loading">
+                            <div class="spinner"></div>
+                            <div>Загрузка...</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1122,6 +1291,7 @@
         const amongusData = [];
         const AMONGUS_SPEED_MIN = 90;
         const AMONGUS_SPEED_MAX = 160;
+        const BEHIND_FILES = ['blue', 'purple', 'white'];
 
         function resetAmongus(a, spawnRight) {
             const W = window.innerWidth;
@@ -1151,6 +1321,7 @@
             shuffled.forEach((name, index) => {
                 const img = document.createElement('img');
                 img.className = 'amongus';
+                if (BEHIND_FILES.includes(name)) img.classList.add('behind');
                 img.src = 'bg/' + name + '.png';
                 img.alt = name;
                 img.loading = 'lazy';
@@ -1237,41 +1408,82 @@
             this.classList.toggle('open');
         });
 
-        // ===== ТИТРЫ =====
+        // ===== ТИТРЫ (БОЛЬШИЕ ПАНЕЛИ АВТОРОВ) =====
         async function loadCredits() {
             const body = document.getElementById('creditsBody');
-            body.innerHTML = '<div class="credits-loading">Загрузка...</div>';
+            body.innerHTML = '<div class="credits-loading"><div class="spinner"></div><div>Загрузка...</div></div>';
             try {
                 const r = await fetch('./credits.json?' + Date.now());
                 if (!r.ok) throw new Error();
                 const data = await r.json();
-                let html = '';
+
+                const allMembers = [];
                 (data.sections || []).forEach(section => {
-                    html += '<div class="credits-section"><div class="credits-section-title">' +
-                        escapeHtml(section.title || 'Без названия') + '</div>';
                     (section.members || []).forEach(p => {
-                        const name = escapeHtml(p.name || '');
-                        const role = escapeHtml(p.role || '');
-                        const avatar = p.avatar
-                            ? '<img class="credits-avatar" src="' + escapeHtml(p.avatar) +
-                              '" alt="' + name + '" loading="lazy" ' +
-                              'onerror="this.outerHTML=\'<div class=&quot;credits-avatar-placeholder&quot;>👤</div>\'">'
-                            : '<div class="credits-avatar-placeholder">👤</div>';
-                        html += '<div class="credits-person">' + avatar +
-                            '<div class="credits-info">' +
-                                '<div class="credits-name">' + name + '</div>' +
-                                '<div class="credits-role">' + role + '</div>' +
-                                (p.link ? '<a class="credits-link" href="' + escapeHtml(p.link) +
-                                    '" target="_blank" rel="noopener">' +
-                                    escapeHtml(p.linkText || p.link) + '</a>' : '') +
-                            '</div></div>';
+                        allMembers.push({
+                            name: p.name || '',
+                            role: p.role || '',
+                            desc: p.desc || '',
+                            avatar: p.avatar || '',
+                            link: p.link || '',
+                            linkText: p.linkText || 'Ссылка',
+                            sectionTitle: section.title || ''
+                        });
                     });
-                    html += '</div>';
                 });
-                body.innerHTML = html || '<div class="credits-loading">Список пуст</div>';
+
+                if (allMembers.length === 0) {
+                    body.innerHTML = '<div class="credits-empty">' +
+                        '<span class="empty-icon">👥</span>' +
+                        '<div class="empty-title">Список пуст</div>' +
+                        '<div class="empty-desc">Здесь пока никого нет</div>' +
+                    '</div>';
+                    return;
+                }
+
+                let html = '<div class="credits-list">';
+                allMembers.forEach(p => {
+                    const name = escapeHtml(p.name);
+                    const role = escapeHtml(p.role);
+                    const desc = escapeHtml(p.desc);
+                    const decoText = escapeHtml(p.sectionTitle);
+
+                    const avatarInner = p.avatar
+                        ? '<img class="credits-author-avatar" src="' + escapeHtml(p.avatar) +
+                          '" alt="' + name + '" loading="lazy" ' +
+                          'onerror="this.outerHTML=\'<div class=&quot;credits-author-avatar-placeholder&quot;>👤</div>\'">'
+                        : '<div class="credits-author-avatar-placeholder">👤</div>';
+
+                    const linkHtml = p.link
+                        ? '<a class="credits-author-link" href="' + escapeHtml(p.link) +
+                          '" target="_blank" rel="noopener">' +
+                          escapeHtml(p.linkText) + '</a>'
+                        : '';
+
+                    html += '<div class="credits-author-panel">' +
+                        (decoText ? '<div class="credits-author-deco">' + decoText + '</div>' : '') +
+                        '<div class="credits-author-avatar-wrapper">' +
+                            '<div class="credits-author-avatar-ring"></div>' +
+                            avatarInner +
+                        '</div>' +
+                        '<div class="credits-author-info">' +
+                            (role ? '<div class="credits-author-role-badge">' + role + '</div>' : '') +
+                            '<div class="credits-author-name">' + name + '</div>' +
+                            (desc ? '<div class="credits-author-desc">' + desc + '</div>' : '') +
+                            linkHtml +
+                        '</div>' +
+                    '</div>';
+                });
+                html += '</div>';
+
+                body.innerHTML = html;
                 creditsLoadedFlag.value = true;
             } catch {
-                body.innerHTML = '<div class="credits-loading">⚠️ Не удалось загрузить credits.json</div>';
+                body.innerHTML = '<div class="credits-empty">' +
+                    '<span class="empty-icon">⚠️</span>' +
+                    '<div class="empty-title">Не удалось загрузить</div>' +
+                    '<div class="empty-desc">Проверь файл credits.json</div>' +
+                '</div>';
             }
         }
 
