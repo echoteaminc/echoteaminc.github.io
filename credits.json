@@ -83,18 +83,6 @@
           "linkText": ""
         }
       ]
-    },
-    {
-      "title": "Команда",
-      "members": [
-        {
-          "name": "Karma",
-          "role": "Сценарист",
-          "avatar": "images/credits/Karma.png",
-          "link": "",
-          "linkText": ""
-        }
-      ]
     }
   ]
 }
