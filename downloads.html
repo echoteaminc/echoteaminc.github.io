@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoBlog.INC — Скачать</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <canvas id="stars"></canvas>
+        <div id="amongusLayer"></div>
+        <div class="gradient"></div>
+
+        <div class="content">
+            <div class="top-bar">
+                <header class="header">
+                    <div class="header-right">
+                        <a class="header-btn" href="index.html">📖 Блог</a>
+                        <a class="header-btn active" href="downloads.html">⬇️ Скачать</a>
+                        <a class="header-btn" href="donate.html">💙 Донаты</a>
+                        <a class="header-btn" href="credits.html">👥 Титры</a>
+                    </div>
+                </header>
+
+                <div class="logo-standalone">
+                    <a href="index.html">
+                        <img src="images/ECHOTEAMLOGO.png" alt="EchoTeam">
+                    </a>
+                </div>
+            </div>
+
+            <div class="page-header">
+                <div class="page-badge">Загрузки</div>
+                <h2>Скачать</h2>
+                <p>Здесь собраны все наши проекты и моды. Выбирай платформу и скачивай прямо сейчас — всё бесплатно.</p>
+            </div>
+
+            <div class="download-page">
+                <div class="dl-hero">
+                    <div class="dl-badge">Мод для Friday Night Funkin'</div>
+                    <h2>FunkyMogus</h2>
+                    <p class="dl-subtitle">
+                        Скачай <strong>FunkyMogus</strong> — атмосферный мод с уникальными треками,
+                        анимациями и любимыми амогусами. Выбери удобную платформу ниже.
+                    </p>
+
+                    <img src="images/funkymogus.png" alt="FunkyMogus" class="funky-image"
+                         loading="lazy" onerror="this.style.display='none'">
+
+                    <button class="funky-btn" id="funkyBtn">
+                        Скачать
+                        <span class="funky-arrow">▼</span>
+                    </button>
+
+                    <div class="dl-panel" id="subButtons">
+                        <div class="dl-panel-title">Выбери платформу</div>
+                        <div class="sub-buttons">
+                            <a href="https://gamebanana.com/mods/684716" target="_blank" rel="noopener" class="sub-btn gamebanana">
+                                <span class="sub-icon">🍌</span> Gamebanana
+                            </a>
+                            <a href="https://gamejolt.com/games/funkymogus/960415" target="_blank" rel="noopener" class="sub-btn gamejolt">
+                                <span class="sub-icon">🎮</span> Gamejolt
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="click-amongus-block">
+                    <img src="images/amongus-click.png"
+                         alt="Тыкни в меня!"
+                         class="click-amongus"
+                         id="clickAmongus"
+                         draggable="false">
+                </div>
+            </div>
+
+            <footer class="footer">
+                <div class="official-badge">Официальный сайт</div>
+                <p class="official-text">
+                    Настоящий сайт <strong>EchoBlog.INC</strong> является <strong>единственным официальным</strong>
+                    ресурсом проекта. Все материалы размещены командой
+                    <span class="team-name">EchoTeam.INC</span>.
+                </p>
+                <div class="copyright">© <span>EchoTeam.INC</span> — Все права защищены</div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
