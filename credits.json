@@ -40,18 +40,6 @@
       "title": "Команда",
       "members": [
         {
-          "name": "NiceGames",
-          "role": "Композитор",
-          "avatar": "images/credits/vlad.png",
-          "link": "https://www.youtube.com/@nice-games2007",
-          "linkText": "@YouTube"
-        }
-      ]
-    },
-    {
-      "title": "Команда",
-      "members": [
-        {
           "name": "L1ghtlyvun",
           "role": "Кодер",
           "avatar": "images/credits/l1ghtlyvun.png",
@@ -67,18 +55,6 @@
           "name": "Tazik",
           "role": "Чартер",
           "avatar": "images/credits/Tazik.png",
-          "link": "",
-          "linkText": ""
-        }
-      ]
-    },
-    {
-      "title": "Команда",
-      "members": [
-        {
-          "name": "Ordenchik",
-          "role": "Художник",
-          "avatar": "images/credits/Ordi.png",
           "link": "",
           "linkText": ""
         }
